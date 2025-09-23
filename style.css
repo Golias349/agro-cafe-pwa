@@ -46,7 +46,7 @@ button {
   cursor: pointer;
 }
 
-#pesquisaTalhao, #filtroData {
+#pesquisaTalhao, #filtroData, #selectTalhao {
   margin-top: 10px;
   padding: 0.5em;
   border: 1px solid #ccc;

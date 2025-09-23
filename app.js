@@ -27,6 +27,17 @@ function filtrarPorData(aplicacoes) {
   return aplicacoes.filter(ap => agora - new Date(ap.data).getTime() <= limite);
 }
 
+function atualizarSelectTalhoes() {
+  const select = document.getElementById("selectTalhao");
+  select.innerHTML = "";
+  talhoes.forEach((t, i) => {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = t.nome;
+    select.appendChild(option);
+  });
+}
+
 function renderizarTalhoes() {
   const lista = document.getElementById("listaTalhoes");
   lista.innerHTML = "";
@@ -55,21 +66,6 @@ function renderizarTalhoes() {
       });
       card.appendChild(listaAp);
 
-      const formAp = document.createElement("form");
-      formAp.innerHTML = `
-        <label>Descrição:<br><input type="text" required></label><br>
-        <label>Quantidade (g):<br><input type="number" required></label><br>
-        <button type="submit">Salvar Aplicação</button>
-      `;
-      formAp.onsubmit = e => {
-        e.preventDefault();
-        const desc = formAp.querySelector("input[type=text]").value;
-        const qtd = parseFloat(formAp.querySelector("input[type=number]").value);
-        t.aplicacoes.push({ desc, qtd, data: new Date().toISOString() });
-        salvar();
-      };
-      card.appendChild(formAp);
-
       const btnEditar = document.createElement("button");
       btnEditar.textContent = "✏ Editar Talhão";
       btnEditar.onclick = () => {
@@ -96,6 +92,7 @@ function renderizarTalhoes() {
     });
 
   localStorage.setItem("talhoes", JSON.stringify(talhoes));
+  atualizarSelectTalhoes();
 }
 
 function salvar() {
@@ -109,6 +106,18 @@ document.getElementById("formTalhao").addEventListener("submit", e => {
   if (!nome) return;
   talhoes.push({ nome, aplicacoes: [] });
   document.getElementById("formTalhao").reset();
+  salvar();
+});
+
+document.getElementById("formAplicacao").addEventListener("submit", e => {
+  e.preventDefault();
+  const talhaoIndex = document.getElementById("selectTalhao").value;
+  const desc = document.getElementById("descAplicacao").value;
+  const qtd = parseFloat(document.getElementById("qtdAplicacao").value);
+  if (talhaoIndex === "" || isNaN(qtd)) return;
+
+  talhoes[talhaoIndex].aplicacoes.push({ desc, qtd, data: new Date().toISOString() });
+  document.getElementById("formAplicacao").reset();
   salvar();
 });
 

@@ -19,3 +19,24 @@ header {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
+form {
+  display: flex;
+  flex-direction: column;
+}
+button {
+  background: #4e342e;
+  color: white;
+  border: none;
+  padding: 0.5em;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.delete-btn {
+  background: #b71c1c;
+  color: white;
+  border: none;
+  padding: 0.2em 0.5em;
+  margin-left: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}

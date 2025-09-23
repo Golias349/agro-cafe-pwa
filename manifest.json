@@ -1,7 +1,7 @@
 {
   "name": "AGRO Café",
   "short_name": "AGRO",
-  "start_url": "index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f7fff9",
   "theme_color": "#4e342e",
@@ -10,6 +10,26 @@
       "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Ver aplicações",
+      "short_name": "Aplicações",
+      "description": "Abrir lista de aplicações recentes",
+      "url": "./#aplicacoes",
+      "icons": [
+        { "src": "icon.png", "sizes": "192x192", "type": "image/png" }
+      ]
+    },
+    {
+      "name": "Adicionar aplicação",
+      "short_name": "Adicionar",
+      "description": "Registrar nova aplicação de insumo",
+      "url": "./#nova-aplicacao",
+      "icons": [
+        { "src": "icon.png", "sizes": "192x192", "type": "image/png" }
+      ]
     }
   ]
 }

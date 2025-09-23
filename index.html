@@ -14,32 +14,42 @@
   </header>
 
   <main>
-    <section class="card">
+    <section class="card" id="aplicacoes">
       <h2>Total de Cafezais</h2>
       <p id="totalPlantas">1</p>
     </section>
 
     <section class="card">
       <h2>Aplicações Totais</h2>
-      <p id="aplicacoesTotais">2</p>
+      <p id="aplicacoesTotais">0</p>
     </section>
 
     <section class="card">
       <h2>Este Mês</h2>
-      <p id="esteMes">2</p>
+      <p id="esteMes">0</p>
     </section>
 
     <section class="card">
       <h2>Total de Insumos Aplicados</h2>
-      <p id="totalAplicado">9.6g</p>
+      <p id="totalAplicado">0g</p>
     </section>
 
     <section class="card">
       <h2>Aplicações Recentes no Café</h2>
-      <ul id="listaAplicacoes">
-        <li>☕ Café – 13/09 – 3.8g (npk)</li>
-        <li>☕ Café – 06/09 – 5.8g (npk)</li>
-      </ul>
+      <ul id="listaAplicacoes"></ul>
+    </section>
+
+    <section class="card" id="nova-aplicacao">
+      <h2>Nova Aplicação</h2>
+      <form id="formAplicacao">
+        <label>Descrição:<br>
+          <input type="text" id="desc" placeholder="Ex: Café - 20/09 - 4g npk" required>
+        </label><br><br>
+        <label>Quantidade (g):<br>
+          <input type="number" id="qtd" placeholder="Ex: 4" required>
+        </label><br><br>
+        <button type="submit">Salvar</button>
+      </form>
     </section>
   </main>
 

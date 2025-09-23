@@ -61,9 +61,11 @@ function excluirAplicacao(idx) {
 // Adicionar talhão
 document.getElementById("formTalhao").addEventListener("submit", e => {
   e.preventDefault();
-  const nome = document.getElementById("nomeTalhao").value;
+  const nome = document.getElementById("nomeTalhao").value.trim();
+  if (!nome) return;
   talhoes.push({ nome, aplicacoes: [] });
   document.getElementById("formTalhao").reset();
+  localStorage.setItem("talhoes", JSON.stringify(talhoes));
   renderizarTalhoes();
 });
 
@@ -107,7 +109,7 @@ document.getElementById("excluirTalhao").addEventListener("click", () => {
   }
 });
 
-// Relatório Geral com gráfico alternável
+// Relatório Geral
 document.getElementById("abrirRelatorio").addEventListener("click", () => {
   gerarRelatorio();
 });
@@ -144,7 +146,6 @@ function gerarRelatorio() {
   document.getElementById("relTotalAplicacoes").textContent = totalAplicacoes;
   document.getElementById("relTotalInsumos").textContent = totalInsumos + "g";
 
-  // Criar gráfico
   const ctx = document.getElementById("graficoInsumos").getContext("2d");
   if (chart) chart.destroy();
   chart = new Chart(ctx, {
@@ -165,9 +166,7 @@ function gerarRelatorio() {
     },
     options: {
       responsive: true,
-      plugins: {
-        legend: { display: true }
-      }
+      plugins: { legend: { display: true } }
     }
   });
 

@@ -3,7 +3,7 @@ body {
   margin: 0;
   background: #f7fff9;
   color: #222;
-  padding-bottom: 60px; /* espaço para o menu inferior */
+  padding-bottom: 60px;
 }
 
 header {
@@ -46,7 +46,7 @@ button {
   cursor: pointer;
 }
 
-#pesquisaTalhao, #filtroData, #selectTalhao {
+#pesquisaTalhao, #selectTalhao {
   margin-top: 10px;
   padding: 0.5em;
   border: 1px solid #ccc;

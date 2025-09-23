@@ -19,7 +19,21 @@
     <!-- Aba Talhões -->
     <section id="abaTalhoes" class="aba ativa">
       <div class="card">
-        <h2>🌱 Registro de Adubação</h2>
+        <h2>🌱 Talhões</h2>
+        <form id="formTalhao">
+          <input type="text" id="nomeTalhao" placeholder="Novo Talhão" required>
+          <button type="submit">Adicionar Talhão</button>
+        </form>
+        <br>
+        <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
+      </div>
+      <section id="listaTalhoes"></section>
+    </section>
+
+    <!-- Aba Registros -->
+    <section id="abaRegistros" class="aba">
+      <div class="card">
+        <h2>📝 Registro de Adubação</h2>
         <form id="formAplicacao">
           <label for="selectTalhao">Selecionar Talhão:</label>
           <select id="selectTalhao" required></select>
@@ -28,25 +42,6 @@
           <button type="submit">Salvar Aplicação</button>
         </form>
       </div>
-
-      <div class="card">
-        <h2>Talhões</h2>
-        <form id="formTalhao">
-          <input type="text" id="nomeTalhao" placeholder="Novo Talhão" required>
-          <button type="submit">Adicionar Talhão</button>
-        </form>
-        <br>
-        <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
-        <br><br>
-        <label>Filtrar aplicações por período:</label>
-        <select id="filtroData">
-          <option value="all">Todas</option>
-          <option value="24h">Últimas 24h</option>
-          <option value="7d">Últimos 7 dias</option>
-          <option value="30d">Últimos 30 dias</option>
-        </select>
-      </div>
-      <section id="listaTalhoes"></section>
     </section>
 
     <!-- Aba Relatórios -->
@@ -69,6 +64,7 @@
   <!-- Menu inferior -->
   <nav class="menu-inferior">
     <button onclick="mostrarAba('abaTalhoes')">🌱 Talhões</button>
+    <button onclick="mostrarAba('abaRegistros')">📝 Registros</button>
     <button onclick="mostrarAba('abaRelatorios')">📊 Relatórios</button>
   </nav>
 

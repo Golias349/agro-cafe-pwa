@@ -4,58 +4,108 @@ document.getElementById("data").textContent = new Date().toLocaleDateString("pt-
 });
 
 let talhoes = JSON.parse(localStorage.getItem("talhoes")) || [];
-let talhaoAtual = null;
 let chart = null;
 let tipoGrafico = "bar";
+let termoPesquisa = "";
+let filtroPeriodo = "all";
 
-// Renderizar lista de talhões
+function filtrarPorData(aplicacoes) {
+  if (filtroPeriodo === "all") return aplicacoes;
+  const agora = Date.now();
+  let limite = 0;
+  if (filtroPeriodo === "24h") limite = 24*60*60*1000;
+  if (filtroPeriodo === "7d") limite = 7*24*60*60*1000;
+  if (filtroPeriodo === "30d") limite = 30*24*60*60*1000;
+  return aplicacoes.filter(ap => agora - new Date(ap.data).getTime() <= limite);
+}
+
+// Renderizar lista de talhões com formulário de adubação
 function renderizarTalhoes() {
   const lista = document.getElementById("listaTalhoes");
   lista.innerHTML = "";
-  talhoes.forEach((t, i) => {
-    const li = document.createElement("li");
-    li.textContent = t.nome + " (" + t.aplicacoes.length + " aplicações)";
-    li.style.cursor = "pointer";
-    li.onclick = () => abrirTalhao(i);
-    lista.appendChild(li);
-  });
+
+  talhoes
+    .filter(t => t.nome.toLowerCase().includes(termoPesquisa.toLowerCase()))
+    .forEach((t, i) => {
+      const card = document.createElement("section");
+      card.className = "card";
+
+      const titulo = document.createElement("h3");
+      titulo.textContent = t.nome;
+      card.appendChild(titulo);
+
+      const aplicacoesFiltradas = filtrarPorData(t.aplicacoes);
+      const resumo = document.createElement("p");
+      resumo.innerHTML = `<strong>Total de Aplicações:</strong> ${aplicacoesFiltradas.length} <br> 
+                          <strong>Total Aplicado:</strong> ${aplicacoesFiltradas.reduce((acc, ap) => acc + ap.qtd, 0)}g`;
+      card.appendChild(resumo);
+
+      const listaAp = document.createElement("ul");
+      aplicacoesFiltradas.slice().reverse().forEach((ap, idx) => {
+        const li = document.createElement("li");
+        li.textContent = ap.desc + " – " + ap.qtd + "g (" + new Date(ap.data).toLocaleDateString("pt-BR") + ")";
+        const btn = document.createElement("button");
+        btn.textContent = "Excluir";
+        btn.className = "delete-btn";
+        btn.onclick = () => {
+          t.aplicacoes.splice(t.aplicacoes.indexOf(ap), 1);
+          salvar();
+        };
+        li.appendChild(btn);
+        listaAp.appendChild(li);
+      });
+      card.appendChild(listaAp);
+
+      // Formulário de adubação dentro do card
+      const formAp = document.createElement("form");
+      formAp.innerHTML = `
+        <label>Descrição:<br><input type="text" required></label><br>
+        <label>Quantidade (g):<br><input type="number" required></label><br>
+        <button type="submit">Salvar Aplicação</button>
+      `;
+      formAp.onsubmit = e => {
+        e.preventDefault();
+        const desc = formAp.querySelector("input[type=text]").value;
+        const qtd = parseFloat(formAp.querySelector("input[type=number]").value);
+        t.aplicacoes.push({ desc, qtd, data: new Date().toISOString() });
+        salvar();
+      };
+      card.appendChild(formAp);
+
+      // Botões editar e excluir talhão
+      const btnEditar = document.createElement("button");
+      btnEditar.textContent = "✏ Editar Talhão";
+      btnEditar.onclick = () => {
+        const novoNome = prompt("Digite o novo nome do talhão:", t.nome);
+        if (novoNome) {
+          t.nome = novoNome;
+          salvar();
+        }
+      };
+
+      const btnExcluir = document.createElement("button");
+      btnExcluir.textContent = "🗑 Excluir Talhão";
+      btnExcluir.className = "delete-btn";
+      btnExcluir.onclick = () => {
+        if (confirm("Excluir este talhão e todas as aplicações?")) {
+          talhoes.splice(i, 1);
+          salvar();
+        }
+      };
+
+      card.appendChild(btnEditar);
+      card.appendChild(btnExcluir);
+
+      lista.appendChild(card);
+    });
+
   localStorage.setItem("talhoes", JSON.stringify(talhoes));
 }
 
-// Abrir talhão
-function abrirTalhao(index) {
-  talhaoAtual = index;
-  const talhao = talhoes[index];
-  document.getElementById("tituloTalhao").textContent = talhao.nome;
-  document.getElementById("totalAplicacoes").textContent = talhao.aplicacoes.length;
-
-  let total = talhao.aplicacoes.reduce((acc, ap) => acc + parseFloat(ap.qtd), 0);
-  document.getElementById("totalAplicado").textContent = total + "g";
-
-  const listaAp = document.getElementById("listaAplicacoes");
-  listaAp.innerHTML = "";
-  talhao.aplicacoes.slice().reverse().forEach((ap, idx) => {
-    const li = document.createElement("li");
-    li.textContent = ap.desc + " – " + ap.qtd + "g";
-    const btn = document.createElement("button");
-    btn.textContent = "Excluir";
-    btn.className = "delete-btn";
-    btn.onclick = () => excluirAplicacao(idx);
-    li.appendChild(btn);
-    listaAp.appendChild(li);
-  });
-
-  document.getElementById("listaTalhoesSection").style.display = "none";
-  document.getElementById("detalhesTalhao").style.display = "block";
-  document.getElementById("relatorioGeral").style.display = "none";
-}
-
-// Excluir aplicação
-function excluirAplicacao(idx) {
-  let talhao = talhoes[talhaoAtual];
-  talhao.aplicacoes.splice(talhao.aplicacoes.length - 1 - idx, 1);
+// Salvar alterações e re-renderizar
+function salvar() {
   localStorage.setItem("talhoes", JSON.stringify(talhoes));
-  abrirTalhao(talhaoAtual);
+  renderizarTalhoes();
 }
 
 // Adicionar talhão
@@ -65,48 +115,19 @@ document.getElementById("formTalhao").addEventListener("submit", e => {
   if (!nome) return;
   talhoes.push({ nome, aplicacoes: [] });
   document.getElementById("formTalhao").reset();
-  localStorage.setItem("talhoes", JSON.stringify(talhoes));
+  salvar();
+});
+
+// Pesquisar talhões
+document.getElementById("pesquisaTalhao").addEventListener("input", e => {
+  termoPesquisa = e.target.value;
   renderizarTalhoes();
 });
 
-// Adicionar aplicação
-document.getElementById("formAplicacao").addEventListener("submit", e => {
-  e.preventDefault();
-  const desc = document.getElementById("desc").value;
-  const qtd = parseFloat(document.getElementById("qtd").value);
-  talhoes[talhaoAtual].aplicacoes.push({ desc, qtd });
-  document.getElementById("formAplicacao").reset();
-  localStorage.setItem("talhoes", JSON.stringify(talhoes));
-  abrirTalhao(talhaoAtual);
-});
-
-// Botão voltar
-document.getElementById("voltar").addEventListener("click", () => {
-  document.getElementById("listaTalhoesSection").style.display = "block";
-  document.getElementById("detalhesTalhao").style.display = "none";
-  document.getElementById("relatorioGeral").style.display = "none";
+// Filtro por período
+document.getElementById("filtroData").addEventListener("change", e => {
+  filtroPeriodo = e.target.value;
   renderizarTalhoes();
-});
-
-// Botão editar talhão
-document.getElementById("editarTalhao").addEventListener("click", () => {
-  const novoNome = prompt("Digite o novo nome do talhão:", talhoes[talhaoAtual].nome);
-  if (novoNome) {
-    talhoes[talhaoAtual].nome = novoNome;
-    localStorage.setItem("talhoes", JSON.stringify(talhoes));
-    abrirTalhao(talhaoAtual);
-  }
-});
-
-// Botão excluir talhão
-document.getElementById("excluirTalhao").addEventListener("click", () => {
-  if (confirm("Tem certeza que deseja excluir este talhão e todas as suas aplicações?")) {
-    talhoes.splice(talhaoAtual, 1);
-    localStorage.setItem("talhoes", JSON.stringify(talhoes));
-    document.getElementById("listaTalhoesSection").style.display = "block";
-    document.getElementById("detalhesTalhao").style.display = "none";
-    renderizarTalhoes();
-  }
 });
 
 // Relatório Geral
@@ -117,6 +138,10 @@ document.getElementById("abrirRelatorio").addEventListener("click", () => {
 document.getElementById("toggleGrafico").addEventListener("click", () => {
   tipoGrafico = tipoGrafico === "bar" ? "pie" : "bar";
   gerarRelatorio();
+});
+
+document.getElementById("voltarRelatorio").addEventListener("click", () => {
+  document.getElementById("relatorioGeral").style.display = "none";
 });
 
 function gerarRelatorio() {
@@ -130,12 +155,13 @@ function gerarRelatorio() {
   let dados = [];
 
   talhoes.forEach(t => {
-    totalAplicacoes += t.aplicacoes.length;
-    const totalTalhao = t.aplicacoes.reduce((acc, ap) => acc + parseFloat(ap.qtd), 0);
+    const aplicacoesFiltradas = filtrarPorData(t.aplicacoes);
+    totalAplicacoes += aplicacoesFiltradas.length;
+    const totalTalhao = aplicacoesFiltradas.reduce((acc, ap) => acc + parseFloat(ap.qtd), 0);
     totalInsumos += totalTalhao;
 
     const li = document.createElement("li");
-    li.textContent = `${t.nome}: ${t.aplicacoes.length} aplicações, ${totalTalhao}g aplicados`;
+    li.textContent = `${t.nome}: ${aplicacoesFiltradas.length} aplicações, ${totalTalhao}g aplicados`;
     resumo.appendChild(li);
 
     labels.push(t.nome);
@@ -170,8 +196,6 @@ function gerarRelatorio() {
     }
   });
 
-  document.getElementById("listaTalhoesSection").style.display = "none";
-  document.getElementById("detalhesTalhao").style.display = "none";
   document.getElementById("relatorioGeral").style.display = "block";
 }
 

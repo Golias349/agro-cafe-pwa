@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
   <header>
@@ -15,44 +16,50 @@
   </header>
 
   <main>
-    <section class="card">
-      <h2>Talhões</h2>
-      <form id="formTalhao">
-        <input type="text" id="nomeTalhao" placeholder="Novo Talhão" required>
-        <button type="submit">Adicionar Talhão</button>
-      </form>
-      <br>
-      <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
-      <br><br>
-      <label>Filtrar aplicações por período:</label>
-      <select id="filtroData">
-        <option value="all">Todas</option>
-        <option value="24h">Últimas 24h</option>
-        <option value="7d">Últimos 7 dias</option>
-        <option value="30d">Últimos 30 dias</option>
-      </select>
+    <!-- Aba Talhões -->
+    <section id="abaTalhoes" class="aba ativa">
+      <div class="card">
+        <h2>Talhões</h2>
+        <form id="formTalhao">
+          <input type="text" id="nomeTalhao" placeholder="Novo Talhão" required>
+          <button type="submit">Adicionar Talhão</button>
+        </form>
+        <br>
+        <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
+        <br><br>
+        <label>Filtrar aplicações por período:</label>
+        <select id="filtroData">
+          <option value="all">Todas</option>
+          <option value="24h">Últimas 24h</option>
+          <option value="7d">Últimos 7 dias</option>
+          <option value="30d">Últimos 30 dias</option>
+        </select>
+      </div>
+      <section id="listaTalhoes"></section>
     </section>
 
-    <section id="listaTalhoes"></section>
-
-    <section class="card">
-      <button id="abrirRelatorio">📊 Relatório Geral</button>
-    </section>
-
-    <section class="card" id="relatorioGeral" style="display:none;">
-      <h2>📊 Relatório Geral</h2>
-      <p><strong>Total de Talhões:</strong> <span id="relTotalTalhoes">0</span></p>
-      <p><strong>Total de Aplicações:</strong> <span id="relTotalAplicacoes">0</span></p>
-      <p><strong>Total de Insumos Aplicados:</strong> <span id="relTotalInsumos">0g</span></p>
-      <h3>Resumo por Talhão</h3>
-      <ul id="resumoTalhoes"></ul>
-      <canvas id="graficoInsumos" width="400" height="200"></canvas>
-      <br>
-      <button id="toggleGrafico">🔄 Alternar Gráfico</button>
-      <br><br>
-      <button id="voltarRelatorio">⬅ Voltar</button>
+    <!-- Aba Relatórios -->
+    <section id="abaRelatorios" class="aba">
+      <div class="card">
+        <h2>📊 Relatório Geral</h2>
+        <p><strong>Total de Talhões:</strong> <span id="relTotalTalhoes">0</span></p>
+        <p><strong>Total de Aplicações:</strong> <span id="relTotalAplicacoes">0</span></p>
+        <p><strong>Total de Insumos Aplicados:</strong> <span id="relTotalInsumos">0g</span></p>
+        <h3>Resumo por Talhão</h3>
+        <ul id="resumoTalhoes"></ul>
+        <canvas id="graficoInsumos" width="400" height="200"></canvas>
+        <br>
+        <button id="toggleGrafico">🔄 Alternar Gráfico</button>
+        <button id="exportarPDF">📄 Exportar PDF</button>
+      </div>
     </section>
   </main>
+
+  <!-- Menu inferior -->
+  <nav class="menu-inferior">
+    <button onclick="mostrarAba('abaTalhoes')">🌱 Talhões</button>
+    <button onclick="mostrarAba('abaRelatorios')">📊 Relatórios</button>
+  </nav>
 
   <script src="app.js"></script>
 </body>

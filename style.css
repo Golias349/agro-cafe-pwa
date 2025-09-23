@@ -3,6 +3,7 @@ body {
   margin: 0;
   background: #f7fff9;
   color: #222;
+  padding-bottom: 60px; /* espaço para o menu inferior */
 }
 
 header {
@@ -50,4 +51,28 @@ button {
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 8px;
+}
+
+.aba { display: none; }
+.aba.ativa { display: block; }
+
+.menu-inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #4e342e;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5em 0;
+}
+
+.menu-inferior button {
+  flex: 1;
+  border-radius: 0;
+  margin: 0;
+  background: none;
+  color: white;
+  font-size: 16px;
+  padding: 0.7em;
 }

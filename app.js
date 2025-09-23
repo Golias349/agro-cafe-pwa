@@ -1,4 +1,3 @@
-// Atualiza a data automaticamente
 document.getElementById("data").textContent = new Date().toLocaleDateString("pt-BR", {
   weekday: "long", year: "numeric", month: "long", day: "numeric"
 });
@@ -8,6 +7,15 @@ let chart = null;
 let tipoGrafico = "bar";
 let termoPesquisa = "";
 let filtroPeriodo = "all";
+
+function mostrarAba(id) {
+  document.querySelectorAll(".aba").forEach(aba => aba.classList.remove("ativa"));
+  document.getElementById(id).classList.add("ativa");
+
+  if (id === "abaRelatorios") {
+    gerarRelatorio();
+  }
+}
 
 function filtrarPorData(aplicacoes) {
   if (filtroPeriodo === "all") return aplicacoes;
@@ -19,7 +27,6 @@ function filtrarPorData(aplicacoes) {
   return aplicacoes.filter(ap => agora - new Date(ap.data).getTime() <= limite);
 }
 
-// Renderizar lista de talhões com formulário de adubação
 function renderizarTalhoes() {
   const lista = document.getElementById("listaTalhoes");
   lista.innerHTML = "";
@@ -41,22 +48,13 @@ function renderizarTalhoes() {
       card.appendChild(resumo);
 
       const listaAp = document.createElement("ul");
-      aplicacoesFiltradas.slice().reverse().forEach((ap, idx) => {
+      aplicacoesFiltradas.slice().reverse().forEach(ap => {
         const li = document.createElement("li");
         li.textContent = ap.desc + " – " + ap.qtd + "g (" + new Date(ap.data).toLocaleDateString("pt-BR") + ")";
-        const btn = document.createElement("button");
-        btn.textContent = "Excluir";
-        btn.className = "delete-btn";
-        btn.onclick = () => {
-          t.aplicacoes.splice(t.aplicacoes.indexOf(ap), 1);
-          salvar();
-        };
-        li.appendChild(btn);
         listaAp.appendChild(li);
       });
       card.appendChild(listaAp);
 
-      // Formulário de adubação dentro do card
       const formAp = document.createElement("form");
       formAp.innerHTML = `
         <label>Descrição:<br><input type="text" required></label><br>
@@ -72,7 +70,6 @@ function renderizarTalhoes() {
       };
       card.appendChild(formAp);
 
-      // Botões editar e excluir talhão
       const btnEditar = document.createElement("button");
       btnEditar.textContent = "✏ Editar Talhão";
       btnEditar.onclick = () => {
@@ -95,20 +92,17 @@ function renderizarTalhoes() {
 
       card.appendChild(btnEditar);
       card.appendChild(btnExcluir);
-
       lista.appendChild(card);
     });
 
   localStorage.setItem("talhoes", JSON.stringify(talhoes));
 }
 
-// Salvar alterações e re-renderizar
 function salvar() {
   localStorage.setItem("talhoes", JSON.stringify(talhoes));
   renderizarTalhoes();
 }
 
-// Adicionar talhão
 document.getElementById("formTalhao").addEventListener("submit", e => {
   e.preventDefault();
   const nome = document.getElementById("nomeTalhao").value.trim();
@@ -118,21 +112,14 @@ document.getElementById("formTalhao").addEventListener("submit", e => {
   salvar();
 });
 
-// Pesquisar talhões
 document.getElementById("pesquisaTalhao").addEventListener("input", e => {
   termoPesquisa = e.target.value;
   renderizarTalhoes();
 });
 
-// Filtro por período
 document.getElementById("filtroData").addEventListener("change", e => {
   filtroPeriodo = e.target.value;
   renderizarTalhoes();
-});
-
-// Relatório Geral
-document.getElementById("abrirRelatorio").addEventListener("click", () => {
-  gerarRelatorio();
 });
 
 document.getElementById("toggleGrafico").addEventListener("click", () => {
@@ -140,8 +127,31 @@ document.getElementById("toggleGrafico").addEventListener("click", () => {
   gerarRelatorio();
 });
 
-document.getElementById("voltarRelatorio").addEventListener("click", () => {
-  document.getElementById("relatorioGeral").style.display = "none";
+document.getElementById("exportarPDF").addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF("p", "mm", "a4");
+
+  doc.setFontSize(18);
+  doc.text("Relatório Geral - AGRO Café", 14, 20);
+  doc.setFontSize(12);
+  doc.text("Data: " + new Date().toLocaleDateString("pt-BR"), 14, 30);
+
+  doc.text("Total de Talhões: " + document.getElementById("relTotalTalhoes").textContent, 14, 40);
+  doc.text("Total de Aplicações: " + document.getElementById("relTotalAplicacoes").textContent, 14, 47);
+  doc.text("Total de Insumos Aplicados: " + document.getElementById("relTotalInsumos").textContent, 14, 54);
+
+  doc.text("Resumo por Talhão:", 14, 65);
+  let y = 72;
+  document.querySelectorAll("#resumoTalhoes li").forEach(li => {
+    doc.text("- " + li.textContent, 14, y);
+    y += 7;
+  });
+
+  const canvas = document.getElementById("graficoInsumos");
+  const imgData = canvas.toDataURL("image/png");
+  doc.addImage(imgData, "PNG", 14, y, 180, 100);
+
+  doc.save("relatorio-agro-cafe.pdf");
 });
 
 function gerarRelatorio() {
@@ -195,16 +205,10 @@ function gerarRelatorio() {
       plugins: { legend: { display: true } }
     }
   });
-
-  document.getElementById("relatorioGeral").style.display = "block";
 }
 
-// Inicializar
 renderizarTalhoes();
 
-// Registrar service worker
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("Service Worker registrado!"))
-    .catch(err => console.error("Erro ao registrar Service Worker", err));
+  navigator.serviceWorker.register("service-worker.js");
 }

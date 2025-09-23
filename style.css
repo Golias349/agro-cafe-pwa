@@ -1,0 +1,21 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f7fff9;
+  color: #222;
+}
+
+header {
+  background: #4e342e; /* marrom café */
+  color: white;
+  text-align: center;
+  padding: 1em;
+}
+
+.card {
+  background: white;
+  margin: 1em;
+  padding: 1em;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}

@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AGRO</title>
+  <title>AGRO Café</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -14,42 +15,54 @@
   </header>
 
   <main>
-    <section class="card" id="aplicacoes">
-      <h2>Total de Cafezais</h2>
-      <p id="totalPlantas">1</p>
+    <section class="card" id="listaTalhoesSection">
+      <h2>Talhões</h2>
+      <ul id="listaTalhoes"></ul>
+      <form id="formTalhao">
+        <input type="text" id="nomeTalhao" placeholder="Novo Talhão" required>
+        <button type="submit">Adicionar Talhão</button>
+      </form>
+      <br>
+      <button id="abrirRelatorio">📊 Relatório Geral</button>
     </section>
 
-    <section class="card">
-      <h2>Aplicações Totais</h2>
-      <p id="aplicacoesTotais">0</p>
-    </section>
+    <section class="card" id="detalhesTalhao" style="display:none;">
+      <h2 id="tituloTalhao"></h2>
+      <p><strong>Total de Aplicações:</strong> <span id="totalAplicacoes">0</span></p>
+      <p><strong>Total Aplicado:</strong> <span id="totalAplicado">0g</span></p>
 
-    <section class="card">
-      <h2>Este Mês</h2>
-      <p id="esteMes">0</p>
-    </section>
-
-    <section class="card">
-      <h2>Total de Insumos Aplicados</h2>
-      <p id="totalAplicado">0g</p>
-    </section>
-
-    <section class="card">
-      <h2>Aplicações Recentes no Café</h2>
+      <h3>Aplicações Recentes</h3>
       <ul id="listaAplicacoes"></ul>
-    </section>
 
-    <section class="card" id="nova-aplicacao">
-      <h2>Nova Aplicação</h2>
+      <h3>Nova Aplicação</h3>
       <form id="formAplicacao">
         <label>Descrição:<br>
-          <input type="text" id="desc" placeholder="Ex: Café - 20/09 - 4g npk" required>
+          <input type="text" id="desc" placeholder="Ex: Café - 25/09 - 4g npk" required>
         </label><br><br>
         <label>Quantidade (g):<br>
           <input type="number" id="qtd" placeholder="Ex: 4" required>
         </label><br><br>
-        <button type="submit">Salvar</button>
+        <button type="submit">Salvar Aplicação</button>
       </form>
+      <br>
+      <button id="editarTalhao">✏ Editar Talhão</button>
+      <button id="excluirTalhao" class="delete-btn">🗑 Excluir Talhão</button>
+      <br><br>
+      <button id="voltar">⬅ Voltar</button>
+    </section>
+
+    <section class="card" id="relatorioGeral" style="display:none;">
+      <h2>📊 Relatório Geral</h2>
+      <p><strong>Total de Talhões:</strong> <span id="relTotalTalhoes">0</span></p>
+      <p><strong>Total de Aplicações:</strong> <span id="relTotalAplicacoes">0</span></p>
+      <p><strong>Total de Insumos Aplicados:</strong> <span id="relTotalInsumos">0g</span></p>
+      <h3>Resumo por Talhão</h3>
+      <ul id="resumoTalhoes"></ul>
+      <canvas id="graficoInsumos" width="400" height="200"></canvas>
+      <br>
+      <button id="toggleGrafico">🔄 Alternar Gráfico</button>
+      <br><br>
+      <button id="voltarRelatorio">⬅ Voltar</button>
     </section>
   </main>
 

@@ -8,7 +8,6 @@ const urlsToCache = [
   "./icon.png"
 ];
 
-// Instala e força atualização imediata
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
@@ -16,7 +15,6 @@ self.addEventListener("install", event => {
   self.skipWaiting();
 });
 
-// Ativa e remove caches antigos
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -28,7 +26,6 @@ self.addEventListener("activate", event => {
   self.clients.claim();
 });
 
-// Intercepta requisições
 self.addEventListener("fetch", event => {
   event.respondWith(
     fetch(event.request).catch(() => caches.match(event.request))

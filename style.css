@@ -13,9 +13,6 @@ header {
   text-align: center;
   padding: 1rem;
 }
-header h1 {
-  margin: 0;
-}
 main {
   flex: 1;
   padding-bottom: 70px;
@@ -27,7 +24,10 @@ main {
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.4);
   width: 95%;
-  max-width: 600px;
+  max-width: 700px;
+}
+h2, h3 {
+  margin-top: 0;
 }
 input, select {
   width: 100%;
@@ -72,16 +72,19 @@ button:hover {
   margin: 0.5rem 0;
   border-radius: 8px;
 }
-.talhao-card h3 {
-  margin: 0 0 0.5rem 0;
+.lista-relatorio {
+  list-style: none;
+  padding: 0;
 }
-.talhao-card p {
-  margin: 0.2rem 0;
-  font-size: 0.9rem;
+.lista-relatorio li {
+  background: #2a2a2a;
+  padding: 0.7rem;
+  margin: 0.4rem 0;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
 }
-.talhao-card button {
-  width: auto;
-  margin-right: 5px;
-  padding: 6px 12px;
-  font-size: 0.8rem;
+.acoes-relatorio button {
+  width: 48%;
+  display: inline-block;
 }

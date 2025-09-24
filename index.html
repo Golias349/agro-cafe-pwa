@@ -7,8 +7,6 @@
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
   <header>
@@ -63,14 +61,7 @@
         <p><strong>Total de Insumos Aplicados:</strong> <span id="relTotalInsumos">0g</span></p>
         <h3>Resumo por Talhão</h3>
         <ul id="resumoTalhoes"></ul>
-        <h3>Gráfico por Talhão</h3>
         <canvas id="graficoInsumos"></canvas>
-        <h3>Gráfico por Tipo de Insumo</h3>
-        <canvas id="graficoTipos"></canvas>
-        <div class="acoes-relatorio">
-          <button id="exportarPDF">📄 Exportar PDF</button>
-          <button id="exportarXLSX">🧾 Exportar Excel</button>
-        </div>
       </div>
     </section>
 
@@ -79,18 +70,8 @@
       <div class="card">
         <h2>⚙️ Configurações</h2>
         <button id="btnPermissaoNotif">Permitir Notificações</button>
-        <label>Frequência:</label>
-        <select id="notifFreq">
-          <option value="none">Sem lembrete</option>
-          <option value="daily">Diário</option>
-          <option value="weekly">Semanal</option>
-        </select>
         <label>Hora:</label>
         <input type="time" id="notifHora" value="08:00">
-        <button id="salvarNotif">💾 Salvar lembrete</button>
-        <hr>
-        <button id="exportarJSON">⬇️ Exportar Dados</button>
-        <input type="file" id="importarJSON" accept="application/json">
       </div>
     </section>
   </main>

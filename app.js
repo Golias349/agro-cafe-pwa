@@ -1,1 +1,1 @@
-// JS completo com talhões, registros, relatórios, backup e notificações configuráveis
+// JS completo para talhões, registros, relatórios, notificações e backup (sem fazenda)

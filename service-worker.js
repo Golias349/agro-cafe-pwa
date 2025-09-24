@@ -1,1 +1,1 @@
-// Service worker com cache + suporte a notificações
+// Service worker com cache e notificações push

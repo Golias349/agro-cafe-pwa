@@ -23,12 +23,10 @@
         <h2>🌱 Talhões</h2>
         <form id="formTalhao">
           <input type="text" id="nomeTalhao" placeholder="Nome do Talhão" required>
-          <input type="text" id="fazendaTalhao" placeholder="Fazenda/Lote (opcional)">
           <button type="submit">Adicionar Talhão</button>
         </form>
         <div class="linha-filtros">
           <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
-          <input type="text" id="filtroFazenda" placeholder="🏷️ Filtrar por fazenda...">
         </div>
       </div>
       <section id="listaTalhoes"></section>
@@ -70,8 +68,6 @@
             <option value="Gesso">Gesso</option>
             <option value="Outro">Outro</option>
           </select>
-          <label>Fazenda:</label>
-          <input type="text" id="filtroFazendaRel" placeholder="(opcional)">
           <button id="toggleGrafico">🔄 Barras/Pizza</button>
         </div>
         <p><strong>Total de Talhões:</strong> <span id="relTotalTalhoes">0</span></p>
@@ -79,8 +75,6 @@
         <p><strong>Total de Insumos Aplicados:</strong> <span id="relTotalInsumos">0g</span></p>
         <h3>Resumo por Talhão</h3>
         <ul id="resumoTalhoes"></ul>
-        <h3>Totais por Fazenda</h3>
-        <ul id="resumoFazendas"></ul>
         <h3>Gráfico por Talhão</h3>
         <canvas id="graficoInsumos" width="400" height="220"></canvas>
         <h3>Gráfico por Tipo de Insumo</h3>
@@ -126,7 +120,6 @@
           </select>
         </label>
         <button id="salvarNotif">💾 Salvar lembrete</button>
-        <p class="nota">Observação: em alguns celulares, notificações em background sem servidor podem não ser exatas. O lembrete funciona garantidamente com o app aberto ou ao reabrir.</p>
       </div>
       <div class="card">
         <h2>💾 Backup & Restauração</h2>

@@ -1,1 +1,47 @@
-/* CSS otimizado para celular e tema escuro automático (simplificado) */
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #121212;
+  color: #fff;
+}
+header {
+  background: #6d4c41;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+}
+.card {
+  background: #1e1e1e;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+}
+button {
+  background: #6d4c41;
+  color: #fff;
+  border: none;
+  padding: 0.7rem;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+  width: 100%;
+}
+button:hover {
+  background: #5d4037;
+}
+.menu-inferior {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #6d4c41;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+}
+.menu-inferior button {
+  flex: 1;
+  margin: 0 5px;
+}
+.aba { display: none; }
+.aba.ativa { display: block; }

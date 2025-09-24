@@ -25,9 +25,7 @@
           <input type="text" id="nomeTalhao" placeholder="Nome do Talhão" required>
           <button type="submit">Adicionar Talhão</button>
         </form>
-        <div class="linha-filtros">
-          <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
-        </div>
+        <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
       </div>
       <section id="listaTalhoes"></section>
     </section>
@@ -47,8 +45,10 @@
             <option value="Gesso">Gesso</option>
             <option value="Outro">Outro</option>
           </select>
-          <label>Descrição:<br><input type="text" id="descAplicacao" placeholder="Ex: Adubação de cobertura" required></label>
-          <label>Quantidade (g):<br><input type="number" id="qtdAplicacao" placeholder="Ex: 500" required></label>
+          <label>Descrição:</label>
+          <input type="text" id="descAplicacao" placeholder="Ex: Adubação de cobertura" required>
+          <label>Quantidade (g):</label>
+          <input type="number" id="qtdAplicacao" required>
           <button type="submit">Salvar Aplicação</button>
         </form>
       </div>
@@ -58,27 +58,15 @@
     <section id="abaRelatorios" class="aba">
       <div class="card">
         <h2>📊 Relatórios</h2>
-        <div class="filtros-relatorio">
-          <label>Tipo:</label>
-          <select id="filtroTipo">
-            <option value="Todos">Todos</option>
-            <option value="NPK">NPK</option>
-            <option value="Ureia">Ureia</option>
-            <option value="Calcário">Calcário</option>
-            <option value="Gesso">Gesso</option>
-            <option value="Outro">Outro</option>
-          </select>
-          <button id="toggleGrafico">🔄 Barras/Pizza</button>
-        </div>
         <p><strong>Total de Talhões:</strong> <span id="relTotalTalhoes">0</span></p>
         <p><strong>Total de Aplicações:</strong> <span id="relTotalAplicacoes">0</span></p>
         <p><strong>Total de Insumos Aplicados:</strong> <span id="relTotalInsumos">0g</span></p>
         <h3>Resumo por Talhão</h3>
         <ul id="resumoTalhoes"></ul>
         <h3>Gráfico por Talhão</h3>
-        <canvas id="graficoInsumos" width="400" height="220"></canvas>
+        <canvas id="graficoInsumos"></canvas>
         <h3>Gráfico por Tipo de Insumo</h3>
-        <canvas id="graficoTipos" width="400" height="220"></canvas>
+        <canvas id="graficoTipos"></canvas>
         <div class="acoes-relatorio">
           <button id="exportarPDF">📄 Exportar PDF</button>
           <button id="exportarXLSX">🧾 Exportar Excel</button>
@@ -90,44 +78,19 @@
     <section id="abaConfig" class="aba">
       <div class="card">
         <h2>⚙️ Configurações</h2>
-        <p><strong>Tema:</strong> automático (segue o sistema).</p>
-      </div>
-      <div class="card">
-        <h2>🔔 Notificações</h2>
-        <p>Permitir lembretes para registrar adubação.</p>
-        <button id="btnPermissaoNotif">Permitir notificações</button>
-        <div class="grid-2">
-          <label>Frequência
-            <select id="notifFreq">
-              <option value="none">Sem lembrete</option>
-              <option value="daily">Diário</option>
-              <option value="weekly">Semanal</option>
-            </select>
-          </label>
-          <label>Hora
-            <input type="time" id="notifHora" value="08:00">
-          </label>
-        </div>
-        <label id="diaSemanaWrap" style="display:none;">Dia da semana
-          <select id="notifDia">
-            <option value="1">Segunda</option>
-            <option value="2">Terça</option>
-            <option value="3">Quarta</option>
-            <option value="4">Quinta</option>
-            <option value="5">Sexta</option>
-            <option value="6">Sábado</option>
-            <option value="0">Domingo</option>
-          </select>
-        </label>
+        <button id="btnPermissaoNotif">Permitir Notificações</button>
+        <label>Frequência:</label>
+        <select id="notifFreq">
+          <option value="none">Sem lembrete</option>
+          <option value="daily">Diário</option>
+          <option value="weekly">Semanal</option>
+        </select>
+        <label>Hora:</label>
+        <input type="time" id="notifHora" value="08:00">
         <button id="salvarNotif">💾 Salvar lembrete</button>
-      </div>
-      <div class="card">
-        <h2>💾 Backup & Restauração</h2>
-        <button id="exportarJSON">⬇️ Exportar Dados (JSON)</button>
-        <br><br>
-        <label class="import-label">⬆️ Importar Dados (JSON)
-          <input type="file" id="importarJSON" accept="application/json">
-        </label>
+        <hr>
+        <button id="exportarJSON">⬇️ Exportar Dados</button>
+        <input type="file" id="importarJSON" accept="application/json">
       </div>
     </section>
   </main>

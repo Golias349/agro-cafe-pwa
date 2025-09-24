@@ -1,1 +1,1 @@
-// app.js com gráficos e relatórios (mesmo código anterior simplificado para salvar espaço)
+// app.js content simplificado

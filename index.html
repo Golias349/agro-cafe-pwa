@@ -22,11 +22,14 @@
       <div class="card">
         <h2>🌱 Talhões</h2>
         <form id="formTalhao">
-          <input type="text" id="nomeTalhao" placeholder="Novo Talhão" required>
+          <input type="text" id="nomeTalhao" placeholder="Nome do Talhão" required>
+          <input type="text" id="fazendaTalhao" placeholder="Fazenda/Lote (opcional)">
           <button type="submit">Adicionar Talhão</button>
         </form>
-        <br>
-        <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
+        <div class="linha-filtros">
+          <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão...">
+          <input type="text" id="filtroFazenda" placeholder="🏷️ Filtrar por fazenda...">
+        </div>
       </div>
       <section id="listaTalhoes"></section>
     </section>
@@ -38,7 +41,6 @@
         <form id="formAplicacao">
           <label for="selectTalhao">Selecionar Talhão:</label>
           <select id="selectTalhao" required></select>
-
           <label>Tipo de Insumo:</label>
           <select id="tipoInsumo" required>
             <option value="NPK">NPK</option>
@@ -47,9 +49,8 @@
             <option value="Gesso">Gesso</option>
             <option value="Outro">Outro</option>
           </select>
-
-          <label>Descrição:<br><input type="text" id="descAplicacao" placeholder="Ex: Adubação de cobertura" required></label><br>
-          <label>Quantidade (g):<br><input type="number" id="qtdAplicacao" placeholder="Ex: 500" required></label><br>
+          <label>Descrição:<br><input type="text" id="descAplicacao" placeholder="Ex: Adubação de cobertura" required></label>
+          <label>Quantidade (g):<br><input type="number" id="qtdAplicacao" placeholder="Ex: 500" required></label>
           <button type="submit">Salvar Aplicação</button>
         </form>
       </div>
@@ -58,10 +59,9 @@
     <!-- Aba Relatórios -->
     <section id="abaRelatorios" class="aba">
       <div class="card">
-        <h2>📊 Relatório Geral</h2>
-
+        <h2>📊 Relatórios</h2>
         <div class="filtros-relatorio">
-          <label>Filtrar por tipo de insumo:</label>
+          <label>Tipo:</label>
           <select id="filtroTipo">
             <option value="Todos">Todos</option>
             <option value="NPK">NPK</option>
@@ -70,24 +70,25 @@
             <option value="Gesso">Gesso</option>
             <option value="Outro">Outro</option>
           </select>
+          <label>Fazenda:</label>
+          <input type="text" id="filtroFazendaRel" placeholder="(opcional)">
+          <button id="toggleGrafico">🔄 Barras/Pizza</button>
         </div>
-
         <p><strong>Total de Talhões:</strong> <span id="relTotalTalhoes">0</span></p>
         <p><strong>Total de Aplicações:</strong> <span id="relTotalAplicacoes">0</span></p>
         <p><strong>Total de Insumos Aplicados:</strong> <span id="relTotalInsumos">0g</span></p>
-
         <h3>Resumo por Talhão</h3>
         <ul id="resumoTalhoes"></ul>
-
+        <h3>Totais por Fazenda</h3>
+        <ul id="resumoFazendas"></ul>
         <h3>Gráfico por Talhão</h3>
-        <canvas id="graficoInsumos" width="400" height="200"></canvas>
-        <br>
-        <button id="toggleGrafico">🔄 Alternar Barras/Pizza</button>
-        <button id="exportarPDF">📄 Exportar PDF</button>
-        <button id="exportarXLSX">🧾 Exportar Excel</button>
-
+        <canvas id="graficoInsumos" width="400" height="220"></canvas>
         <h3>Gráfico por Tipo de Insumo</h3>
-        <canvas id="graficoTipos" width="400" height="200"></canvas>
+        <canvas id="graficoTipos" width="400" height="220"></canvas>
+        <div class="acoes-relatorio">
+          <button id="exportarPDF">📄 Exportar PDF</button>
+          <button id="exportarXLSX">🧾 Exportar Excel</button>
+        </div>
       </div>
     </section>
 
@@ -95,7 +96,37 @@
     <section id="abaConfig" class="aba">
       <div class="card">
         <h2>⚙️ Configurações</h2>
-        <p><strong>Tema:</strong> segue automaticamente o tema do sistema (claro/escuro).</p>
+        <p><strong>Tema:</strong> automático (segue o sistema).</p>
+      </div>
+      <div class="card">
+        <h2>🔔 Notificações</h2>
+        <p>Permitir lembretes para registrar adubação.</p>
+        <button id="btnPermissaoNotif">Permitir notificações</button>
+        <div class="grid-2">
+          <label>Frequência
+            <select id="notifFreq">
+              <option value="none">Sem lembrete</option>
+              <option value="daily">Diário</option>
+              <option value="weekly">Semanal</option>
+            </select>
+          </label>
+          <label>Hora
+            <input type="time" id="notifHora" value="08:00">
+          </label>
+        </div>
+        <label id="diaSemanaWrap" style="display:none;">Dia da semana
+          <select id="notifDia">
+            <option value="1">Segunda</option>
+            <option value="2">Terça</option>
+            <option value="3">Quarta</option>
+            <option value="4">Quinta</option>
+            <option value="5">Sexta</option>
+            <option value="6">Sábado</option>
+            <option value="0">Domingo</option>
+          </select>
+        </label>
+        <button id="salvarNotif">💾 Salvar lembrete</button>
+        <p class="nota">Observação: em alguns celulares, notificações em background sem servidor podem não ser exatas. O lembrete funciona garantidamente com o app aberto ou ao reabrir.</p>
       </div>
       <div class="card">
         <h2>💾 Backup & Restauração</h2>
@@ -104,7 +135,6 @@
         <label class="import-label">⬆️ Importar Dados (JSON)
           <input type="file" id="importarJSON" accept="application/json">
         </label>
-        <p class="nota">Ao importar, os dados atuais serão substituídos.</p>
       </div>
     </section>
   </main>

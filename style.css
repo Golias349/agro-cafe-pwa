@@ -1,1 +1,41 @@
-/* style.css content simplificado */
+:root{
+  --bg:#121212; --fg:#fff; --card:#1e1e1e; --accent:#6d4c41; --accent-dark:#5d4037;
+  --muted:#2a2a2a; --border:#333; --shadow:rgba(0,0,0,.45);
+  --danger:#c62828; --ok:#2e7d32;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--accent);padding:12px;text-align:center}
+main{flex:1;padding-bottom:80px}
+
+h1,h2,h3{margin:8px 0}
+.card{background:var(--card);margin:12px auto;padding:14px;border-radius:14px;box-shadow:0 6px 18px var(--shadow);width:95%;max-width:900px}
+.nota{opacity:.85}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid-2-wrap{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:820px){.grid-2-wrap{grid-template-columns:1fr 1fr}}
+
+input,select,button{width:100%;border:none;border-radius:12px;padding:12px}
+input,select{background:#151515;color:var(--fg);border:1px solid var(--border)}
+button{background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+button:hover{background:var(--accent-dark)}
+
+.menu-inferior{position:fixed;bottom:0;left:0;width:100%;background:var(--accent);display:flex;gap:6px;padding:8px}
+.menu-inferior button{background:transparent;border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:10px}
+
+.aba{display:none}.aba.ativa{display:block}
+
+.talhao-card{background:var(--muted);padding:12px;border-radius:12px;margin:8px auto;max-width:900px;display:flex;flex-direction:column;gap:6px}
+.talhao-actions{display:flex;gap:8px}
+.talhao-actions button{flex:1;padding:10px}
+
+.lista-relatorio{list-style:none;margin:0;padding:0}
+.lista-relatorio li{background:var(--muted);padding:10px 12px;border-radius:10px;margin:6px 0;display:flex;justify-content:space-between;gap:10px}
+
+.import-label{display:inline-block;border:1px dashed var(--border);padding:.7em 1em;border-radius:10px;cursor:pointer}
+.import-label input{display:none}
+
+.badge-low{display:inline-block;background:var(--danger);color:#fff;padding:2px 8px;border-radius:999px;font-size:.8rem;margin-left:8px}
+.badge-ok{display:inline-block;background:var(--ok);color:#fff;padding:2px 8px;border-radius:999px;font-size:.8rem;margin-left:8px}

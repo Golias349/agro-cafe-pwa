@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#6d4c41" />
+  <script src="https://apis.google.com/js/api.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
   <header>
@@ -15,7 +17,6 @@
   </header>
 
   <main>
-    <!-- TALHÕES -->
     <section id="abaTalhoes" class="aba ativa">
       <div class="card">
         <h2>🌱 Talhões</h2>
@@ -30,7 +31,6 @@
       <section id="listaTalhoes"></section>
     </section>
 
-    <!-- REGISTROS -->
     <section id="abaRegistros" class="aba">
       <div class="card">
         <h2>📝 Registro de Adubação</h2>
@@ -53,7 +53,6 @@
       </div>
     </section>
 
-    <!-- RELATÓRIOS -->
     <section id="abaRelatorios" class="aba">
       <div class="card">
         <h2>📊 Totais</h2>
@@ -85,6 +84,7 @@
         <div class="card">
           <h3>💰 Gastos por Mês (R$)</h3>
           <canvas id="grafCustoMes"></canvas>
+          <div id="tabelaCustoMes" class="lista-relatorio" style="margin-top:10px"></div>
         </div>
         <div class="card">
           <h3>💰 Gastos por Tipo de Adubo (R$)</h3>
@@ -104,7 +104,6 @@
       </div>
     </section>
 
-    <!-- ESTOQUE -->
     <section id="abaEstoque" class="aba">
       <div class="card">
         <h2>📦 Estoque de Adubo</h2>
@@ -119,10 +118,18 @@
       <section id="listaEstoque"></section>
     </section>
 
-    <!-- CONFIG -->
     <section id="abaConfig" class="aba">
       <div class="card">
-        <h2>⚙️ Configurações</h2>
+        <h2>⚙️ Conexão com Google Drive</h2>
+        <button id="btnLoginGoogle" onclick="handleAuthClick()">🔑 Conectar ao Google</button>
+        <div class="grid-2">
+          <button onclick="saveDataToDrive()">💾 Salvar backup no Drive</button>
+          <button onclick="loadDataFromDrive()">📂 Carregar backup do Drive</button>
+        </div>
+        <p class="nota">Os dados são salvos em um arquivo único: <code>grao-digital-backup.json</code> no seu Google Drive.</p>
+      </div>
+      <div class="card">
+        <h2>🔔 Notificações</h2>
         <button id="btnPermissaoNotif">Permitir notificações</button>
         <div class="grid-2">
           <label>Frequência
@@ -148,13 +155,11 @@
           </select>
         </label>
         <button id="salvarNotif">💾 Salvar lembrete</button>
-        <p class="nota">Observação: alguns celulares podem não disparar no minuto exato se o app estiver fechado; ao reabrir, o lembrete é verificado.</p>
       </div>
-
       <div class="card">
-        <h2>💾 Backup & Restauração</h2>
+        <h2>💾 Backup local</h2>
         <button id="exportarJSON">⬇️ Exportar Dados (JSON)</button>
-        <br /><br />
+        <br/><br/>
         <label class="import-label">⬆️ Importar Dados (JSON)
           <input type="file" id="importarJSON" accept="application/json" />
         </label>
@@ -162,7 +167,6 @@
     </section>
   </main>
 
-  <!-- Menu inferior -->
   <nav class="menu-inferior">
     <button onclick="mostrarAba('abaTalhoes')">🌱 Talhões</button>
     <button onclick="mostrarAba('abaRegistros')">📝 Registros</button>
@@ -171,11 +175,10 @@
     <button onclick="mostrarAba('abaConfig')">⚙️ Config</button>
   </nav>
 
-  <!-- libs -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <!-- app -->
   <script src="app.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", () => { if (window.gapi) { initGoogle(); } });</script>
 </body>
 </html>

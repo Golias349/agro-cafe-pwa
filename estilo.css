@@ -1,9 +1,31 @@
-body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; color: #333; }
-header { background: #6c3; padding: 15px; text-align: center; color: white; }
-main { padding: 15px; margin-bottom:60px; }
-section { margin-bottom: 20px; padding: 10px; background: white; border-radius: 8px; }
-button { margin-top: 5px; padding: 8px 12px; border: none; border-radius: 5px; background: #6c3; color: white; cursor: pointer; }
-button:hover { background: #5a2; }
-nav { position: fixed; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-around; background: #444; color: white; padding: 10px; }
-nav button { background: transparent; color: white; border: none; cursor: pointer; }
-nav button:hover { text-decoration: underline; }
+
+:root{
+  --bg:#121212; --card:#1e1e1e; --text:#f5f5f5; --muted:#bdbdbd;
+  --brand:#4CAF50; --brand-2:#2e7d32; --ghost:#2e3135;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+.topbar{background:var(--brand);padding:18px 16px;text-align:center;color:#fff}
+.topbar h1{margin:0;font-weight:800;letter-spacing:.2px}
+.topbar p{margin:.25rem 0 0;opacity:.9}
+main{padding:18px 12px 90px}
+h2{margin:14px 4px}
+.card{background:var(--card);border-radius:14px;padding:14px;margin:10px 4px;box-shadow:0 1px 0 #0006}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input,select,button{width:100%;padding:10px;border-radius:10px;border:1px solid #333;background:#111;color:#eee}
+input::placeholder{color:#666}
+.btn{background:var(--brand);border:none;color:#fff;font-weight:700;cursor:pointer}
+.btn:hover{background:var(--brand-2)}
+.btn.wide{grid-column:1/-1}
+.btn.ghost{background:var(--ghost);border:1px solid #3a3d41}
+.lista{list-style:none;padding:0;margin:0}
+.lista li{padding:10px;border-bottom:1px solid #2a2a2a;display:flex;justify-content:space-between;gap:10px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;background:#151515;border-top:1px solid #2a2a2a;display:grid;grid-template-columns:repeat(4,1fr)}
+.tab{padding:12px;border:none;background:transparent;color:#ddd;font-weight:600}
+.tab.ativa{color:#fff;background:#0f0f0f}
+.aba{display:none}
+.aba.ativa{display:block}
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px;border-bottom:1px solid #2a2a2a;text-align:left}
+th{color:#9ee2a3}

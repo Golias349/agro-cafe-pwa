@@ -1,23 +1,111 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Grão Digital</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icone.png">
   <meta name="theme-color" content="#4CAF50">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icone-192.png">
+  <link rel="apple-touch-icon" href="icone-192.png">
+  <link rel="stylesheet" href="estilo.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <h1>🌱 Grão Digital</h1>
-  <p>App configurado como PWA.</p>
+  <header class="topbar">
+    <h1>🌾 Grão Digital</h1>
+    <p id="dataTopo"></p>
+  </header>
+
+  <main>
+    <!-- Talhoes -->
+    <section id="abaTalhoes" class="aba ativa">
+      <h2>🌱 Talhões</h2>
+      <div class="card">
+        <input id="novoTalhao" placeholder="Nome do Talhão">
+        <button class="btn" onclick="adicionarTalhao()">Adicionar Talhão</button>
+      </div>
+      <div class="card">
+        <input id="pesqTalhao" placeholder="🔎 Pesquisar talhão..." oninput="renderTalhoes(this.value)">
+        <ul id="listaTalhoes" class="lista"></ul>
+      </div>
+    </section>
+
+    <!-- Registros -->
+    <section id="abaRegistros" class="aba">
+      <h2>📝 Registro de Adubação</h2>
+      <div class="card grid">
+        <label>Talhão
+          <select id="selectTalhao"></select>
+        </label>
+        <label>Tipo de Insumo
+          <select id="tipoInsumo"></select>
+        </label>
+        <label>Descrição
+          <input id="descricao" placeholder="Ex: Cobertura">
+        </label>
+        <label>Quantidade (kg)
+          <input id="quantidade" type="number" inputmode="numeric" placeholder="Ex: 500">
+        </label>
+        <button class="btn wide" onclick="salvarAplicacao()">Salvar Aplicação</button>
+      </div>
+      <div class="card">
+        <ul id="listaAplicacoes" class="lista"></ul>
+      </div>
+    </section>
+
+    <!-- Estoque -->
+    <section id="abaEstoque" class="aba">
+      <h2>📦 Estoque</h2>
+      <div class="card grid">
+        <label>Nome do insumo
+          <input id="nomeInsumo" placeholder="Ex: NPK">
+        </label>
+        <label>Quantidade (kg)
+          <input id="quantidadeEstoque" type="number" inputmode="numeric" placeholder="Ex: 1000">
+        </label>
+        <label>Preço por saco (50kg)
+          <input id="precoSaco" type="number" inputmode="decimal" placeholder="Ex: 250">
+        </label>
+        <button class="btn" onclick="adicionarEstoque()">Adicionar ao Estoque</button>
+      </div>
+      <div class="card">
+        <ul id="listaEstoque" class="lista"></ul>
+      </div>
+
+      <h3>📊 Resumo Mensal</h3>
+      <div class="card">
+        <div id="tabelaCustos"></div>
+        <canvas id="grafCustos" height="220"></canvas>
+      </div>
+    </section>
+
+    <!-- Configurações -->
+    <section id="abaConfig" class="aba">
+      <h2>⚙️ Configurações</h2>
+      <div class="card">
+        <p><strong>Backup no Google Drive (opcional)</strong></p>
+        <p>Edite <code>CLIENT_ID</code> em <code>app.js</code> com o seu ID OAuth e recarregue a página.</p>
+        <div class="row">
+          <button class="btn ghost" onclick="initGoogle()">Conectar ao Google</button>
+          <button class="btn ghost" onclick="saveDataToDrive()">Salvar no Drive</button>
+          <button class="btn ghost" onclick="loadDataFromDrive()">Carregar do Drive</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button onclick="mostrarAba('abaTalhoes')" class="tab ativa">🌱 Talhões</button>
+    <button onclick="mostrarAba('abaRegistros')" class="tab">📝 Registros</button>
+    <button onclick="mostrarAba('abaEstoque')" class="tab">📦 Estoque</button>
+    <button onclick="mostrarAba('abaConfig')" class="tab">⚙️ Configurações</button>
+  </nav>
 
   <script src="app.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log("✅ Service Worker registrado"))
-        .catch(err => console.error("❌ SW falhou:", err));
+      navigator.serviceWorker.register('service-worker.js').catch(console.error);
     }
   </script>
 </body>

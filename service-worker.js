@@ -1,10 +1,7 @@
-self.addEventListener("install", (e) => {
-  e.waitUntil(
-    caches.open("grao-digital-v6").then((c) =>
-      c.addAll(["./", "./index.html", "./style.css", "./app.js", "./manifest.json", "./icon.png"])
-    )
-  );
+self.addEventListener("install", event => {
+  console.log("✅ Service Worker instalado");
 });
-self.addEventListener("fetch", (e) => {
-  e.respondWith(caches.match(e.request).then((r) => r || fetch(e.request)));
+
+self.addEventListener("fetch", event => {
+  event.respondWith(fetch(event.request));
 });

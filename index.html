@@ -3,65 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌾 Grão Digital</title>
-  <link rel="stylesheet" href="estilo.css">
+  <title>Grão Digital</title>
+  <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icone.png">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="theme-color" content="#4CAF50">
 </head>
 <body>
-  <header>
-    <h1>🌾 Grão Digital</h1>
-    <p id="data"></p>
-  </header>
-
-  <main>
-    <!-- Estoque -->
-    <section id="abaEstoque" class="aba">
-      <h2>📦 Estoque</h2>
-      <input type="text" id="nomeInsumo" placeholder="Nome do insumo">
-      <input type="number" id="quantidadeEstoque" placeholder="Quantidade (kg)">
-      <input type="number" id="precoSaco" placeholder="Preço por saco (50kg)">
-      <button onclick="adicionarEstoque()">Adicionar ao Estoque</button>
-      <ul id="listaEstoque"></ul>
-
-      <h3>📊 Resumo Mensal</h3>
-      <div id="tabelaCustos"></div>
-      <canvas id="grafCustos" style="max-height:300px;"></canvas>
-    </section>
-
-    <!-- Outras abas -->
-    <section id="abaTalhoes" class="aba">
-      <h2>🌱 Talhões</h2>
-      <input type="text" id="novoTalhao" placeholder="Nome do Talhão">
-      <button onclick="adicionarTalhao()">Adicionar Talhão</button>
-      <ul id="listaTalhoes"></ul>
-    </section>
-
-    <section id="abaRegistros" class="aba">
-      <h2>📝 Registro de Adubação</h2>
-      <select id="selectTalhao"></select>
-      <select id="tipoInsumo"></select>
-      <input type="text" id="descricao" placeholder="Descrição">
-      <input type="number" id="quantidade" placeholder="Quantidade (kg)">
-      <button onclick="salvarAplicacao()">Salvar Aplicação</button>
-      <ul id="listaAplicacoes"></ul>
-    </section>
-
-    <section id="abaConfig" class="aba">
-      <h2>⚙️ Configurações</h2>
-      <button onclick="initGoogle()">Conectar ao Google</button>
-      <button onclick="saveDataToDrive()">Salvar no Drive</button>
-      <button onclick="loadDataFromDrive()">Carregar do Drive</button>
-    </section>
-  </main>
-
-  <nav>
-    <button onclick="mostrarAba('abaTalhoes')">🌱 Talhões</button>
-    <button onclick="mostrarAba('abaRegistros')">📝 Registros</button>
-    <button onclick="mostrarAba('abaEstoque')">📦 Estoque</button>
-    <button onclick="mostrarAba('abaConfig')">⚙️ Configurações</button>
-  </nav>
+  <h1>🌱 Grão Digital</h1>
+  <p>App configurado como PWA.</p>
 
   <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log("✅ Service Worker registrado"))
+        .catch(err => console.error("❌ SW falhou:", err));
+    }
+  </script>
 </body>
 </html>

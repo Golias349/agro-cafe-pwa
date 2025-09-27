@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Grão Digital</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#6d4c41" />
-  <script src="https://apis.google.com/js/api.js"></script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌾 Grão Digital</title>
+  <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
   <header>
@@ -17,168 +13,77 @@
   </header>
 
   <main>
+    <!-- Talhões -->
     <section id="abaTalhoes" class="aba ativa">
-      <div class="card">
-        <h2>🌱 Talhões</h2>
-        <form id="formTalhao" class="grid-2">
-          <input type="text" id="nomeTalhao" placeholder="Nome do Talhão" required />
-          <input type="number" step="0.01" id="areaTalhao" placeholder="Área (ha)" required />
-          <input type="number" step="0.01" id="metaTalhao" placeholder="Meta (kg/ha) — opcional" />
-          <button type="submit">Adicionar Talhão</button>
-        </form>
-        <input type="text" id="pesquisaTalhao" placeholder="🔍 Pesquisar talhão..." />
-      </div>
-      <section id="listaTalhoes"></section>
+      <h2>🌱 Talhões</h2>
+      <input type="text" id="novoTalhao" placeholder="Nome do Talhão">
+      <button onclick="adicionarTalhao()">Adicionar Talhão</button>
+      <input type="text" id="pesquisaTalhao" placeholder="🔎 Pesquisar talhão..." oninput="pesquisarTalhoes()">
+      <div id="listaTalhoes"></div>
     </section>
 
+    <!-- Registro -->
     <section id="abaRegistros" class="aba">
-      <div class="card">
-        <h2>📝 Registro de Adubação</h2>
-        <form id="formAplicacao">
-          <label>Talhão</label>
-          <select id="selectTalhao" required></select>
+      <h2>📝 Registro de Adubação</h2>
+      <label>Selecionar Talhão:</label>
+      <select id="selectTalhao"></select>
 
-          <label>Tipo de Adubo (do Estoque)</label>
-          <select id="tipoInsumo" required></select>
+      <label>Tipo de Insumo:</label>
+      <select id="tipoInsumo">
+        <option value="NPK">NPK</option>
+        <option value="Uréia">Uréia</option>
+        <option value="Calcário">Calcário</option>
+      </select>
 
-          <label>Descrição</label>
-          <input type="text" id="descAplicacao" placeholder="Ex.: Adubação de cobertura" required />
+      <label>Descrição:</label>
+      <input type="text" id="descricao" placeholder="Ex: Adubação de cobertura">
 
-          <label>Quantidade aplicada (kg)</label>
-          <input type="number" id="kgAplicacao" placeholder="Ex.: 200" required />
+      <label>Quantidade (kg):</label>
+      <input type="number" id="quantidade" placeholder="Ex: 500">
 
-          <button type="submit">Salvar Aplicação</button>
-          <p class="nota">O custo é calculado automaticamente (kg ÷ kg/saco × R$/saco) e o estoque é atualizado.</p>
-        </form>
-      </div>
+      <button onclick="salvarAplicacao()">Salvar Aplicação</button>
     </section>
 
-    <section id="abaRelatorios" class="aba">
-      <div class="card">
-        <h2>📊 Totais</h2>
-        <div class="resumo">
-          <p><strong>Total de Talhões:</strong> <span id="relTotalTalhoes">0</span></p>
-          <p><strong>Total de Aplicações:</strong> <span id="relTotalAplicacoes">0</span></p>
-          <p><strong>Total Aplicado (kg):</strong> <span id="relTotalKg">0</span></p>
-          <p><strong>Total Gasto (R$):</strong> <span id="relTotalCusto">0,00</span></p>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>📋 Resumo por Talhão</h3>
-        <ul id="resumoTalhoes" class="lista-relatorio"></ul>
-      </div>
-
-      <div class="grid-2-wrap">
-        <div class="card">
-          <h3>📈 kg por Talhão</h3>
-          <canvas id="grafKgTalhao"></canvas>
-        </div>
-        <div class="card">
-          <h3>🥼 kg por Tipo de Adubo</h3>
-          <canvas id="grafKgTipo"></canvas>
-        </div>
-      </div>
-
-      <div class="grid-2-wrap">
-        <div class="card">
-          <h3>💰 Gastos por Mês (R$)</h3>
-          <canvas id="grafCustoMes"></canvas>
-          <div id="tabelaCustoMes" class="lista-relatorio" style="margin-top:10px"></div>
-        </div>
-        <div class="card">
-          <h3>💰 Gastos por Tipo de Adubo (R$)</h3>
-          <canvas id="grafCustoTipo"></canvas>
-        </div>
-      </div>
-
-      <div class="card">
-        <h3>💵 R$/ha por Talhão</h3>
-        <canvas id="grafCustoHaTalhao"></canvas>
-      </div>
-
-      <div class="card acoes-relatorio">
-        <button id="exportarPDF">📄 Exportar PDF</button>
-        <button id="compartilharPDF">📤 Compartilhar PDF</button>
-        <button id="exportarXLSX">🧾 Exportar Excel</button>
-      </div>
-    </section>
-
+    <!-- Estoque -->
     <section id="abaEstoque" class="aba">
-      <div class="card">
-        <h2>📦 Estoque de Adubo</h2>
-        <form id="formEstoque" class="grid-2">
-          <input type="text" id="estNome" placeholder="Nome do adubo (ex.: Ureia, NPK 20-05-20)" required />
-          <input type="number" id="estSacos" placeholder="Quantidade de sacos" required />
-          <input type="number" id="estKgSaco" placeholder="Peso por saco (kg)" required />
-          <input type="number" id="estPrecoSaco" placeholder="Preço por saco (R$)" step="0.01" required />
-          <button type="submit">Adicionar ao Estoque</button>
-        </form>
-      </div>
-      <section id="listaEstoque"></section>
+      <h2>📦 Estoque</h2>
+      <input type="text" id="nomeInsumo" placeholder="Nome do insumo">
+      <input type="number" id="estoqueKg" placeholder="Quantidade (kg)">
+      <input type="number" id="precoSaco" placeholder="Preço por saco (50kg)">
+      <button onclick="adicionarEstoque()">Adicionar ao Estoque</button>
+      <div id="listaEstoque"></div>
+
+      <!-- Novo resumo -->
+      <h3>💰 Custos Mensais</h3>
+      <div id="resumoMensal"></div>
     </section>
 
+    <!-- Relatórios -->
+    <section id="abaRelatorios" class="aba">
+      <h2>📊 Relatórios</h2>
+      <div id="relatorios"></div>
+    </section>
+
+    <!-- Configurações -->
     <section id="abaConfig" class="aba">
-      <div class="card">
-        <h2>⚙️ Conexão com Google Drive</h2>
-        <button id="btnLoginGoogle" onclick="handleAuthClick()">🔑 Conectar ao Google</button>
-        <div class="grid-2">
-          <button onclick="saveDataToDrive()">💾 Salvar backup no Drive</button>
-          <button onclick="loadDataFromDrive()">📂 Carregar backup do Drive</button>
-        </div>
-        <p class="nota">Os dados são salvos em um arquivo único: <code>grao-digital-backup.json</code> no seu Google Drive.</p>
-      </div>
-      <div class="card">
-        <h2>🔔 Notificações</h2>
-        <button id="btnPermissaoNotif">Permitir notificações</button>
-        <div class="grid-2">
-          <label>Frequência
-            <select id="notifFreq">
-              <option value="none">Sem lembrete</option>
-              <option value="daily">Diário</option>
-              <option value="weekly">Semanal</option>
-            </select>
-          </label>
-          <label>Hora
-            <input type="time" id="notifHora" value="08:00" />
-          </label>
-        </div>
-        <label id="diaSemanaWrap" style="display:none;">Dia da semana
-          <select id="notifDia">
-            <option value="1">Segunda</option>
-            <option value="2">Terça</option>
-            <option value="3">Quarta</option>
-            <option value="4">Quinta</option>
-            <option value="5">Sexta</option>
-            <option value="6">Sábado</option>
-            <option value="0">Domingo</option>
-          </select>
-        </label>
-        <button id="salvarNotif">💾 Salvar lembrete</button>
-      </div>
-      <div class="card">
-        <h2>💾 Backup local</h2>
-        <button id="exportarJSON">⬇️ Exportar Dados (JSON)</button>
-        <br/><br/>
-        <label class="import-label">⬆️ Importar Dados (JSON)
-          <input type="file" id="importarJSON" accept="application/json" />
-        </label>
-      </div>
+      <h2>⚙️ Configurações</h2>
+      <button onclick="handleAuthClick()">🔑 Conectar ao Google</button>
+      <button onclick="saveDataToDrive()">💾 Salvar no Drive</button>
+      <button onclick="loadDataFromDrive()">📂 Carregar do Drive</button>
     </section>
   </main>
 
-  <nav class="menu-inferior">
+  <nav>
     <button onclick="mostrarAba('abaTalhoes')">🌱 Talhões</button>
     <button onclick="mostrarAba('abaRegistros')">📝 Registros</button>
-    <button onclick="mostrarAba('abaRelatorios')">📊 Relatórios</button>
     <button onclick="mostrarAba('abaEstoque')">📦 Estoque</button>
-    <button onclick="mostrarAba('abaConfig')">⚙️ Config</button>
+    <button onclick="mostrarAba('abaRelatorios')">📊 Relatórios</button>
+    <button onclick="mostrarAba('abaConfig')">⚙️ Configurações</button>
   </nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <!-- Google API -->
+  <script src="https://apis.google.com/js/api.js"></script>
+  <!-- App principal -->
   <script src="app.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", () => { if (window.gapi) { initGoogle(); } });</script>
 </body>
 </html>

@@ -143,7 +143,7 @@ function atualizarCustos(){
 atualizarCustos();
 
 // -------- Google Drive (opcional) --------
-const CLIENT_ID = "SUBSTITUA_AQUI_SEU_CLIENT_ID.apps.googleusercontent.com";
+const CLIENT_ID = "149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 let authIn = null;
 function initGoogle(){

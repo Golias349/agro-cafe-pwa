@@ -1,9 +1,9 @@
 {
-  "name": "Grão Digital",
-  "short_name": "GrãoDigital",
+  "name": "Gr\u00e3o Digital",
+  "short_name": "GraoDigital",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#121212",
+  "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "icons": [
     {

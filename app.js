@@ -235,7 +235,7 @@ document.getElementById("exportarXLSX").addEventListener("click", ()=>alert("Exp
 if("serviceWorker" in navigator){ navigator.serviceWorker.register("service-worker.js"); }
 
 // Google Drive – placeholder (cole seu CLIENT_ID no projeto completo)
-const CLIENT_ID = "PASTE_YOUR_CLIENT_ID.apps.googleusercontent.com";
+const CLIENT_ID = "149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file";
 let isAuthed=false;
 function initGoogle(){

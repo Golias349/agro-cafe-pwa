@@ -41,6 +41,12 @@ function renderEstoque(){
 }
 renderEstoque();
 
+function limparEstoque(){
+  if(confirm("Tem certeza que deseja limpar todo o estoque?")){
+    estoque=[]; salvarTudo(); renderEstoque();
+  }
+}
+
 function salvarAplicacao(){
   const talhao=document.getElementById("selectTalhao").value;
   const tipo=document.getElementById("tipoInsumo").value;
@@ -77,16 +83,56 @@ function atualizarCustos(){
 }
 atualizarCustos();
 
-// Google Drive
-const CLIENT_ID="149167584419-39h4d0qhjfqjs096870ih6p1fkpqds0k.apps.googleusercontent.com";
+// -------- Google Drive --------
+const CLIENT_ID="COLE_SEU_CLIENT_ID_AQUI"; // <-- Cole aqui seu CLIENT_ID do Google
 const SCOPES="https://www.googleapis.com/auth/drive.file";
-let authIn=null;
+let authInstance;
+
 function initGoogle(){
-  const s=document.createElement("script"); s.src="https://accounts.google.com/gsi/client";
-  s.onload=()=>{ google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:SCOPES,
-    callback:(token)=>{authIn=token;alert("Conectado com sucesso!");}
-  }).requestAccessToken(); };
-  document.body.appendChild(s);
+  gapi.load("client:auth2", () => {
+    gapi.client.init({clientId: CLIENT_ID, scope: SCOPES}).then(() => {
+      authInstance = gapi.auth2.getAuthInstance();
+    });
+  });
 }
-function saveToDrive(){ if(!authIn) return alert("Conecte ao Google primeiro"); alert("Backup no Google Drive pronto (demo)."); }
-function loadFromDrive(){ if(!authIn) return alert("Conecte ao Google primeiro"); alert("Carregar do Google Drive (demo)."); }
+
+function handleAuthClick(){
+  if(!authInstance){alert("Google API não inicializada.");return;}
+  authInstance.signIn().then(()=>{alert("✅ Conectado ao Google Drive!");});
+}
+
+async function saveDataToDrive(){
+  if(!authInstance || !authInstance.isSignedIn.get()){alert("Conecte ao Google primeiro.");return;}
+  let dados={talhoes,estoque,aplicacoes};
+  let fileContent=JSON.stringify(dados,null,2);
+  let file=new Blob([fileContent],{type:"application/json"});
+  const metadata={name:"grao_digital_backup.json",mimeType:"application/json"};
+  const accessToken=gapi.auth.getToken().access_token;
+  let form=new FormData();
+  form.append("metadata",new Blob([JSON.stringify(metadata)],{type:"application/json"}));
+  form.append("file",file);
+  fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",{
+    method:"POST",headers:new Headers({"Authorization":"Bearer "+accessToken}),body:form
+  }).then(r=>r.json()).then(data=>{alert("✅ Backup salvo no Drive!");console.log(data);});
+}
+
+async function loadDataFromDrive(){
+  if(!authInstance || !authInstance.isSignedIn.get()){alert("Conecte ao Google primeiro.");return;}
+  const accessToken=gapi.auth.getToken().access_token;
+  fetch("https://www.googleapis.com/drive/v3/files?q=name='grao_digital_backup.json'&spaces=drive",{
+    headers:new Headers({"Authorization":"Bearer "+accessToken})
+  }).then(r=>r.json()).then(data=>{
+    if(data.files.length===0){alert("Nenhum backup encontrado.");return;}
+    let fileId=data.files[0].id;
+    fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{
+      headers:new Headers({"Authorization":"Bearer "+accessToken})
+    }).then(r=>r.json()).then(backup=>{
+      talhoes=backup.talhoes||[];
+      estoque=backup.estoque||[];
+      aplicacoes=backup.aplicacoes||[];
+      salvarTudo();
+      renderTalhoes();renderEstoque();renderAplicacoes();
+      alert("✅ Backup restaurado!");
+    });
+  });
+}

@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grão Digital</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icone-192.png">
+  <link rel="icon" href="icone.png">
   <link rel="stylesheet" href="estilo.css">
+  <script src="https://apis.google.com/js/api.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script defer src="app.js"></script>
 </head>
@@ -40,6 +41,7 @@
       <input id="quantidadeEstoque" type="number" placeholder="Quantidade (kg)">
       <input id="precoSaco" type="number" placeholder="Preço por saco (50kg)">
       <button onclick="adicionarEstoque()">Adicionar ao Estoque</button>
+      <button onclick="limparEstoque()" class="btn-danger">🗑️ Limpar Estoque</button>
       <ul id="listaEstoque"></ul>
 
       <h3>📊 Resumo Mensal</h3>
@@ -49,9 +51,9 @@
 
     <section id="abaConfig" class="aba">
       <h2>⚙️ Configurações</h2>
-      <button onclick="initGoogle()">Conectar ao Google</button>
-      <button onclick="saveToDrive()">Salvar no Drive</button>
-      <button onclick="loadFromDrive()">Carregar do Drive</button>
+      <button onclick="handleAuthClick()">Conectar ao Google</button>
+      <button onclick="saveDataToDrive()">Salvar no Drive</button>
+      <button onclick="loadDataFromDrive()">Carregar do Drive</button>
     </section>
   </main>
 

@@ -4,6 +4,8 @@ main{padding:1em;margin-bottom:70px}
 section{background:#fff;margin:1em 0;padding:1em;border-radius:8px}
 button{background:#4CAF50;color:#fff;border:none;padding:10px;margin-top:5px;border-radius:5px;cursor:pointer}
 button:hover{background:#45a049}
+button.btn-danger{background:#d9534f}
+button.btn-danger:hover{background:#c9302c}
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:space-around;background:#333;color:#fff}
 nav button{flex:1;background:none;border:none;color:#fff;padding:15px;font-size:16px}
 .aba{display:none}

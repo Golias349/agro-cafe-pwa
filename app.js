@@ -215,12 +215,12 @@ document.getElementById("inputImportar").onchange = (ev)=>{
 };
 
 // ---------- Google Drive (opcional) ----------
-const CLIENT_ID = "COLE_SEU_CLIENT_ID_AQUI"; // substitua
+const CLIENT_ID = "149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com"; // substitua
 const SCOPES = "https://www.googleapis.com/auth/drive.file openid email profile";
 let accessToken = null;
 
 function initGoogle(){
-  if(!CLIENT_ID || CLIENT_ID.includes("COLE_SEU_CLIENT_ID_AQUI")){
+  if(!CLIENT_ID || CLIENT_ID.includes("149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com")){
     alert("Edite CLIENT_ID em app.js com seu OAuth Client ID antes de conectar.");
     return;
   }

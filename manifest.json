@@ -1,20 +1,11 @@
 {
   "name": "Grão Digital",
-  "short_name": "Grão Digital",
+  "short_name": "Grão",
+  "start_url": ".",
   "display": "standalone",
-  "start_url": "./index.html",
-  "background_color": "#0f1216",
-  "theme_color": "#34a853",
+  "background_color": "#2e7d32",
+  "theme_color": "#2e7d32",
   "icons": [
-    {
-      "src": "icone-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icone-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    { "src": "icone.png", "sizes": "192x192", "type": "image/png" }
   ]
 }

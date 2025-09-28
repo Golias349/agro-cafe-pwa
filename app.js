@@ -84,7 +84,7 @@ function atualizarCustos(){
 atualizarCustos();
 
 // -------- Google Drive --------
-const CLIENT_ID="COLE_SEU_CLIENT_ID_AQUI"; // <-- Cole aqui seu CLIENT_ID do Google
+const CLIENT_ID="149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com"; // <-- Cole aqui seu CLIENT_ID do Google
 const SCOPES="https://www.googleapis.com/auth/drive.file";
 let authInstance;
 

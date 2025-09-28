@@ -1,8 +1,43 @@
-body{font-family:sans-serif;margin:0;background:#f0f0f0}
-header{background:#2e7d32;color:white;text-align:center;padding:10px}
-main{padding:10px}
-section{margin-bottom:20px;background:white;padding:10px;border-radius:8px}
-nav{position:fixed;bottom:0;width:100%;background:#2e7d32;display:flex;justify-content:space-around}
-nav button{flex:1;padding:10px;border:none;background:#2e7d32;color:white;font-size:16px}
-button{margin:2px;padding:5px 10px;border:none;border-radius:4px;background:#4caf50;color:white;cursor:pointer}
-button:hover{background:#388e3c}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #f0f0f0;
+}
+header {
+  background: linear-gradient(90deg, #2e7d32, #388e3c);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+section {
+  background: #1e1e1e;
+  margin: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+button {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+button:hover { background: #1b5e20; }
+button.danger { background: #c62828; }
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #2e7d32;
+  display: flex;
+  justify-content: space-around;
+  padding: 0.5rem;
+}
+footer button {
+  flex: 1;
+  margin: 0 0.2rem;
+}

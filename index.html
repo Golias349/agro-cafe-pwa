@@ -6,21 +6,22 @@
   <title>🌱 Grão Digital</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="estilo.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
-  <header><h1>🌱 Grão Digital</h1><p id="data"></p></header>
+  <header>
+    <h1>🌱 Grão Digital</h1>
+    <p id="data"></p>
+  </header>
 
   <main>
     <section id="estoque">
       <h2>📦 Estoque</h2>
       <input id="nomeInsumo" placeholder="Nome do insumo">
-      <input id="qtdInsumo" placeholder="Quantidade (kg)" type="number">
-      <input id="precoInsumo" placeholder="Preço por saco (50kg)" type="number">
+      <input id="qtdInsumo" type="number" placeholder="Quantidade (kg)">
+      <input id="precoInsumo" type="number" placeholder="Preço por saco (50kg)">
       <button onclick="adicionarEstoque()">Adicionar ao Estoque</button>
       <ul id="listaEstoque"></ul>
-    </section>
-
-    <section id="resumo">
       <h3>📊 Resumo Mensal</h3>
       <table>
         <thead><tr><th>Mês</th><th>Kg aplicados</th><th>Gasto (R$)</th></tr></thead>
@@ -29,27 +30,42 @@
     </section>
 
     <section id="talhoes">
-      <h2>🌱 Talhões</h2>
-      <input id="novoTalhao" placeholder="Nome do Talhão">
+      <h2>🌿 Talhões</h2>
+      <input id="nomeTalhao" placeholder="Nome do Talhão">
       <button onclick="adicionarTalhao()">Adicionar Talhão</button>
       <ul id="listaTalhoes"></ul>
     </section>
 
+    <section id="registros">
+      <h2>📑 Registros de Adubação</h2>
+      <select id="talhaoSelect"></select>
+      <input id="tipoInsumo" placeholder="Tipo de insumo">
+      <input id="descricaoInsumo" placeholder="Descrição">
+      <input id="qtdAplicada" type="number" placeholder="Quantidade (kg)">
+      <button onclick="salvarAplicacao()">Salvar Aplicação</button>
+      <ul id="listaRegistros"></ul>
+    </section>
+
     <section id="config">
       <h2>⚙️ Configurações</h2>
+      <button onclick="exportarBackup()">Exportar backup (JSON)</button>
+      <input type="file" onchange="importarBackup(event)">
+      <h3>☁️ Backup no Google Drive (opcional)</h3>
       <button onclick="initGoogle()">Conectar ao Google</button>
       <button onclick="salvarNoDrive()">Salvar no Drive</button>
       <button onclick="carregarDoDrive()">Carregar do Drive</button>
-      <button onclick="apagarTudo()">Apagar tudo</button>
+      <h3>🗑️ Limpeza</h3>
+      <button onclick="apagarTudo()" class="danger">Apagar TODOS os dados</button>
     </section>
   </main>
 
-  <nav>
-    <button onclick="mostrar('estoque')">📦 Estoque</button>
-    <button onclick="mostrar('talhoes')">🌱 Talhões</button>
-    <button onclick="mostrar('config')">⚙️ Configurações</button>
-  </nav>
-
-  <script src="app.js"></script>
+  <footer>
+    <nav>
+      <button onclick="mostrar('talhoes')">🌿 Talhões</button>
+      <button onclick="mostrar('registros')">📑 Registros</button>
+      <button onclick="mostrar('estoque')">📦 Estoque</button>
+      <button onclick="mostrar('config')">⚙️ Configurações</button>
+    </nav>
+  </footer>
 </body>
 </html>

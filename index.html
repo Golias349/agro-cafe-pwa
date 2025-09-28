@@ -1,1 +1,121 @@
-<!DOCTYPE html><html lang='pt-BR'><head><meta charset='UTF-8'><title>Grão Digital</title><link rel='manifest' href='manifesto.json'><link rel='stylesheet' href='estilo.css'></head><body><h1>🌱 Grão Digital</h1><script src='app.js'></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grão Digital</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icone-192.png">
+  <meta name="theme-color" content="#34a853">
+  <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+  <header class="hero">
+    <h1>🌱 Grão Digital</h1>
+    <p id="data"></p>
+  </header>
+
+  <main>
+    <!-- Talhões -->
+    <section id="abaTalhoes" class="aba ativa">
+      <h2>🌿 Talhões</h2>
+      <div class="card">
+        <input id="novoTalhao" placeholder="Nome do Talhão">
+        <button class="btn" id="btnAddTalhao">Adicionar Talhão</button>
+      </div>
+      <ul id="listaTalhoes" class="lista"></ul>
+    </section>
+
+    <!-- Registros -->
+    <section id="abaRegistros" class="aba">
+      <h2>📝 Registros de Adubação</h2>
+      <div class="card grid">
+        <label>
+          <span>Talhão</span>
+          <select id="selTalhao"></select>
+        </label>
+        <label>
+          <span>Tipo de Insumo</span>
+          <input id="tipoInsumo" placeholder="ex.: NPK">
+        </label>
+        <label>
+          <span>Descrição</span>
+          <input id="descricao" placeholder="Ex: Cobertura...">
+        </label>
+        <label>
+          <span>Quantidade (kg)</span>
+          <input id="qtdKg" type="number" min="0" placeholder="Ex: 500">
+        </label>
+        <button class="btn" id="btnSalvarAplicacao">Salvar Aplicação</button>
+      </div>
+
+      <h3>Aplicações Recentes</h3>
+      <ul id="listaAplicacoes" class="lista"></ul>
+    </section>
+
+    <!-- Estoque -->
+    <section id="abaEstoque" class="aba">
+      <h2>📦 Estoque</h2>
+      <div class="card grid">
+        <label>
+          <span>Nome do insumo</span>
+          <input id="insumoNome" placeholder="ex.: NPK">
+        </label>
+        <label>
+          <span>Quantidade (kg)</span>
+          <input id="insumoKg" type="number" min="0" placeholder="ex.: 1000">
+        </label>
+        <label>
+          <span>Preço por saco (50kg)</span>
+          <input id="insumoPrecoSaco" type="number" min="0" step="0.01" placeholder="ex.: 120">
+        </label>
+        <button class="btn" id="btnAddEstoque">Adicionar ao Estoque</button>
+      </div>
+
+      <ul id="listaEstoque" class="lista"></ul>
+
+      <h3>📊 Resumo Mensal</h3>
+      <div class="card">
+        <table class="tabela" id="tabelaResumo">
+          <thead>
+            <tr><th>Mês</th><th>Kg aplicados</th><th>Gasto (R$)</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Configurações -->
+    <section id="abaConfig" class="aba">
+      <h2>⚙️ Configurações</h2>
+      <div class="card">
+        <button class="btn secundario" id="btnExportar">Exportar backup (JSON)</button>
+        <input type="file" id="inputImportar" style="display:none" accept="application/json">
+        <button class="btn secundario" id="btnImportar">Importar backup (JSON)</button>
+      </div>
+
+      <div class="card">
+        <h3>Backup no Google Drive (opcional)</h3>
+        <p>Edite <code>CLIENT_ID</code> em <code>app.js</code> com seu ID OAuth. Depois use os botões abaixo.</p>
+        <button class="btn" id="btnConectar">Conectar ao Google</button>
+        <button class="btn" id="btnSalvarDrive">Salvar no Drive</button>
+        <button class="btn" id="btnCarregarDrive">Carregar do Drive</button>
+      </div>
+
+      <div class="card perigo">
+        <h3>Limpeza</h3>
+        <button class="btn perigo" id="btnApagarDados">Apagar TODOS os dados</button>
+      </div>
+    </section>
+  </main>
+
+  <nav class="tabs">
+    <button class="tab ativa" data-id="abaTalhoes">🌿 Talhões</button>
+    <button class="tab" data-id="abaRegistros">📝 Registros</button>
+    <button class="tab" data-id="abaEstoque">📦 Estoque</button>
+    <button class="tab" data-id="abaConfig">⚙️ Configurações</button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>

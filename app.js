@@ -1,4 +1,4 @@
-let CLIENT_ID = "149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com";
+const CLIENT_ID = "149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/drive.file openid email profile";
 let accessToken = null;
 

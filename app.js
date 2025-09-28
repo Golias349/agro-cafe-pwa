@@ -215,7 +215,7 @@ document.getElementById("inputImportar").onchange = (ev)=>{
 };
 
 // ---------- Google Drive (opcional) ----------
-const CLIENT_ID = "COLE_SEU_CLIENT_ID_AQUI"; // substitua
+const CLIENT_ID = "149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com"; // substitua
 const SCOPES = "https://www.googleapis.com/auth/drive.file openid email profile";
 let accessToken = null;
 

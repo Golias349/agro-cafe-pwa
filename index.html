@@ -1,119 +1,141 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Grão Digital</title>
+
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icone-192.png">
-  <meta name="theme-color" content="#34a853">
+  <link rel="icon" href="icone.png">
+  <link rel="apple-touch-icon" href="icone-192.png">
+  <meta name="theme-color" content="#1b7a3b" />
+
   <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
-  <header class="hero">
-    <h1>🌱 Grão Digital</h1>
-    <p id="data"></p>
+  <header class="app-header">
+    <div class="grad"></div>
+    <div class="header-inner">
+      <div class="brand">
+        <span class="logo">🌱</span>
+        <h1>Grão Digital</h1>
+      </div>
+      <p id="data"></p>
+    </div>
   </header>
 
-  <main>
-    <!-- Talhões -->
-    <section id="abaTalhoes" class="aba ativa">
+  <main id="conteudo">
+
+    <!-- TALHÕES -->
+    <section id="sec-talhoes" class="cartao">
       <h2>🌿 Talhões</h2>
-      <div class="card">
-        <input id="novoTalhao" placeholder="Nome do Talhão">
-        <button class="btn" id="btnAddTalhao">Adicionar Talhão</button>
+      <div class="linha-form">
+        <input id="inpTalhao" class="inp" placeholder="Nome do Talhão" />
+        <button class="btn primario" id="btnAddTalhao">Adicionar Talhão</button>
       </div>
+
       <ul id="listaTalhoes" class="lista"></ul>
     </section>
 
-    <!-- Registros -->
-    <section id="abaRegistros" class="aba">
+    <!-- REGISTROS -->
+    <section id="sec-registros" class="cartao">
       <h2>📝 Registros de Adubação</h2>
-      <div class="card grid">
-        <label>
-          <span>Talhão</span>
-          <select id="selTalhao"></select>
-        </label>
-        <label>
-          <span>Tipo de Insumo</span>
-          <input id="tipoInsumo" placeholder="ex.: NPK">
-        </label>
-        <label>
-          <span>Descrição</span>
-          <input id="descricao" placeholder="Ex: Cobertura...">
-        </label>
-        <label>
-          <span>Quantidade (kg)</span>
-          <input id="qtdKg" type="number" min="0" placeholder="Ex: 500">
-        </label>
-        <button class="btn" id="btnSalvarAplicacao">Salvar Aplicação</button>
+
+      <div class="grid-4">
+        <div>
+          <label>Talhão</label>
+          <select id="selTalhao" class="inp"></select>
+        </div>
+        <div>
+          <label>Insumo (do estoque)</label>
+          <select id="selInsumo" class="inp"></select>
+          <small id="hintInsumo" class="hint"></small>
+        </div>
+        <div>
+          <label>Descrição</label>
+          <input id="inpDesc" class="inp" placeholder="Ex.: Cobertura..." />
+        </div>
+        <div>
+          <label>Quantidade (kg)</label>
+          <input id="inpKg" type="number" min="0" step="0.01" class="inp" placeholder="Ex.: 500" />
+        </div>
       </div>
 
-      <h3>Aplicações Recentes</h3>
-      <ul id="listaAplicacoes" class="lista"></ul>
+      <button class="btn primario largo" id="btnSalvarAplic">Salvar Aplicação</button>
+
+      <h3 class="mt">Aplicações Recentes</h3>
+      <ul id="listaAplic" class="lista"></ul>
     </section>
 
-    <!-- Estoque -->
-    <section id="abaEstoque" class="aba">
+    <!-- ESTOQUE -->
+    <section id="sec-estoque" class="cartao">
       <h2>📦 Estoque</h2>
-      <div class="card grid">
-        <label>
-          <span>Nome do insumo</span>
-          <input id="insumoNome" placeholder="ex.: NPK">
-        </label>
-        <label>
-          <span>Quantidade (kg)</span>
-          <input id="insumoKg" type="number" min="0" placeholder="ex.: 1000">
-        </label>
-        <label>
-          <span>Preço por saco (50kg)</span>
-          <input id="insumoPrecoSaco" type="number" min="0" step="0.01" placeholder="ex.: 120">
-        </label>
-        <button class="btn" id="btnAddEstoque">Adicionar ao Estoque</button>
+      <div class="grid-3">
+        <div>
+          <label>Nome do insumo</label>
+          <input id="inpNomeIns" class="inp" placeholder="Ex.: NPK" />
+        </div>
+        <div>
+          <label>Quantidade (kg)</label>
+          <input id="inpQtdIns" type="number" min="0" step="0.01" class="inp" placeholder="Ex.: 1000" />
+        </div>
+        <div>
+          <label>Preço por saco (50kg)</label>
+          <input id="inpPrecoIns" type="number" min="0" step="0.01" class="inp" placeholder="Ex.: 120" />
+        </div>
       </div>
+      <button class="btn primario" id="btnAddEstoque">Adicionar ao Estoque</button>
 
       <ul id="listaEstoque" class="lista"></ul>
 
-      <h3>📊 Resumo Mensal</h3>
-      <div class="card">
-        <table class="tabela" id="tabelaResumo">
-          <thead>
-            <tr><th>Mês</th><th>Kg aplicados</th><th>Gasto (R$)</th></tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <h3 class="mt">📊 Resumo Mensal</h3>
+      <div class="tabela">
+        <div class="t-head">
+          <span>Mês</span><span>Kg aplicados</span><span>Gasto (R$)</span>
+        </div>
+        <div id="tbodyResumo" class="t-body"></div>
       </div>
     </section>
 
-    <!-- Configurações -->
-    <section id="abaConfig" class="aba">
+    <!-- CONFIGURAÇÕES -->
+    <section id="sec-config" class="cartao">
       <h2>⚙️ Configurações</h2>
-      <div class="card">
-        <button class="btn secundario" id="btnExportar">Exportar backup (JSON)</button>
-        <input type="file" id="inputImportar" style="display:none" accept="application/json">
-        <button class="btn secundario" id="btnImportar">Importar backup (JSON)</button>
+
+      <div class="cartao-sub">
+        <h3>Backup (JSON)</h3>
+        <div class="linha-form">
+          <button class="btn" id="btnExport">Exportar backup (JSON)</button>
+          <label class="btn">
+            Importar backup (JSON)
+            <input type="file" id="fileImport" accept=".json" hidden>
+          </label>
+        </div>
       </div>
 
-      <div class="card">
+      <div class="cartao-sub">
         <h3>Backup no Google Drive (opcional)</h3>
-    
-        <button class="btn" id="btnConectar">Conectar ao Google</button>
-        <button class="btn" id="btnSalvarDrive">Salvar no Drive</button>
-        <button class="btn" id="btnCarregarDrive">Carregar do Drive</button>
+        <p class="muted">Troque o <code>CLIENT_ID</code> em <code>app.js</code> para ativar.</p>
+        <div class="col-btns">
+          <button class="btn primario" id="btnConnect">Conectar ao Google</button>
+          <button class="btn primario" id="btnSaveDrive">Salvar no Drive</button>
+          <button class="btn primario" id="btnLoadDrive">Carregar do Drive</button>
+        </div>
       </div>
 
-      <div class="card perigo">
+      <div class="cartao-sub perigo">
         <h3>Limpeza</h3>
-        <button class="btn perigo" id="btnApagarDados">Apagar TODOS os dados</button>
+        <button class="btn perigo largo" id="btnWipe">Apagar TODOS os dados</button>
       </div>
     </section>
+
   </main>
 
-  <nav class="tabs">
-    <button class="tab ativa" data-id="abaTalhoes">🌿 Talhões</button>
-    <button class="tab" data-id="abaRegistros">📝 Registros</button>
-    <button class="tab" data-id="abaEstoque">📦 Estoque</button>
-    <button class="tab" data-id="abaConfig">⚙️ Configurações</button>
+  <!-- NAV -->
+  <nav class="nav">
+    <button class="nav-btn ativo" data-go="sec-talhoes">🌿 <span>Talhões</span></button>
+    <button class="nav-btn" data-go="sec-registros">📝 <span>Registros</span></button>
+    <button class="nav-btn" data-go="sec-estoque">📦 <span>Estoque</span></button>
+    <button class="nav-btn" data-go="sec-config">⚙️ <span>Configurações</span></button>
   </nav>
 
   <script src="app.js"></script>

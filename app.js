@@ -1,275 +1,305 @@
-// Util
-const EL = s => document.querySelector(s);
-const ELS = s => document.querySelectorAll(s);
-const fmtMoeda = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-const hojeStr = () => new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+// ====== Estado / Storage helpers ======
+const SKEYS = {
+  TALHOES: 'gd_talhoes',
+  ESTOQUE: 'gd_estoque',
+  APLICS:  'gd_aplics'
+};
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+const read = (k, v=[]) => { try { return JSON.parse(localStorage.getItem(k)) ?? v } catch(e){ return v } }
+const write = (k, v) => localStorage.setItem(k, JSON.stringify(v));
 
-EL('#data').textContent = hojeStr();
+// ====== Data / Header ======
+const meses = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+const hoje = new Date();
+$("#dataHoje").textContent = hoje.toLocaleDateString('pt-BR', {
+  weekday:'long', day:'2-digit', month:'long', year:'numeric'
+});
 
-let talhoes   = JSON.parse(localStorage.getItem('talhoes'))   || [];
-let estoque   = JSON.parse(localStorage.getItem('estoque'))   || []; // [{nome, kg, precoSaco50}]
-let aplics    = JSON.parse(localStorage.getItem('aplicacoes'))|| []; // [{data, talhao, insumo, desc, kg, custo}]
-
-function salvarTudo(){
-  localStorage.setItem('talhoes', JSON.stringify(talhoes));
-  localStorage.setItem('estoque', JSON.stringify(estoque));
-  localStorage.setItem('aplicacoes', JSON.stringify(aplics));
+// ====== Navegação ======
+function go(sectionId){
+  $$('main > section').forEach(s => s.classList.add('hidden'));
+  $('#' + sectionId).classList.remove('hidden');
+  $$('.bottom button').forEach(b => b.classList.toggle('active', b.dataset.go===sectionId));
 }
+$$('.bottom').forEach?null:0;
+$$('.bottom button').forEach(btn=>btn.addEventListener('click',()=>go(btn.dataset.go)));
 
-// Render
-function render(){
-  renderTalhoes();
-  renderEstoque();
-  renderAplics();
-  atualizarSelects();
-  atualizarResumoMensal();
-}
+// ====== Renderizadores ======
 function renderTalhoes(){
-  const ul = EL('#listaTalhoes'); ul.innerHTML='';
-  talhoes.forEach((t,i)=>{
-    const li = document.createElement('li'); li.className='item';
-    li.innerHTML = `<div><strong>${t}</strong></div>
-      <div class="acoes">
-        <button class="btn" data-editar="${i}">Editar</button>
-        <button class="btn perigo" data-del="${i}">Excluir</button>
-      </div>`;
-    ul.appendChild(li);
+  const talhoes = read(SKEYS.TALHOES);
+  // lista
+  const ul = $("#listaTalhoes");
+  ul.innerHTML = talhoes.map((t,i)=>`
+    <li>
+      <div><strong>${t}</strong></div>
+      <div class="row gap">
+        <button class="btn outline" data-edit="${i}">Renomear</button>
+        <button class="btn danger" data-del="${i}">Excluir</button>
+      </div>
+    </li>`).join('');
+  ul.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ talhoes.splice(+b.dataset.del,1); write(SKEYS.TALHOES,talhoes); renderAll(); });
+  ul.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{
+    const idx=+b.dataset.edit; const novo=prompt('Novo nome:', talhoes[idx]||''); if(novo){ talhoes[idx]=novo.trim(); write(SKEYS.TALHOES,talhoes); renderAll(); }
   });
+  // select de talhões
+  const sel = $("#selTalhao");
+  sel.innerHTML = `<option value="" disabled selected>Selecione</option>` + talhoes.map(t=>`<option>${t}</option>`).join('');
 }
 function renderEstoque(){
-  const ul = EL('#listaEstoque'); ul.innerHTML='';
-  estoque.forEach((e,i)=>{
-    const precoKg = (Number(e.precoSaco50)||0)/50;
-    const li = document.createElement('li'); li.className='item';
-    li.innerHTML = `<div><strong>${e.nome}</strong>
-      <span class="badge">${e.kg.toFixed(2)} kg</span>
-      <span class="badge">R$ ${Number(e.precoSaco50).toFixed(2)}/50kg</span>
-      <span class="badge">R$ ${precoKg.toFixed(2)}/kg</span></div>
-      <div class="acoes">
-        <button class="btn" data-repor="${i}">Repor</button>
-        <button class="btn perigo" data-delins="${i}">Excluir</button>
-      </div>`;
-    ul.appendChild(li);
-  });
+  const est = read(SKEYS.ESTOQUE);
+  // tabela
+  const wrap = $("#listaEstoque");
+  if(!est.length){
+    wrap.innerHTML = `<div class="muted" style="padding:12px">Sem itens...</div>`;
+  } else {
+    wrap.innerHTML = `<table class="table">
+      <thead><tr><th>Insumo</th><th>Qtd (kg)</th><th>Preço saco (50kg)</th><th></th></tr></thead>
+      <tbody>${est.map((e,i)=>`<tr>
+        <td>${e.nome}</td><td>${e.qtd}</td><td>R$ ${e.preco.toFixed(2)}</td>
+        <td><button class="btn danger" data-del="${i}">Remover</button></td>
+      </tr>`).join('')}</tbody></table>`;
+    wrap.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ est.splice(+b.dataset.del,1); write(SKEYS.ESTOQUE,est); renderAll(); });
+  }
+  // select insumos
+  const sel = $("#selInsumo");
+  sel.innerHTML = `<option value="" disabled selected>Selecione</option>` + est.map(e=>`<option value="${e.nome}">${e.nome} — ${e.qtd.toFixed(1)}kg</option>`).join('');
 }
 function renderAplics(){
-  const ul = EL('#listaAplic'); ul.innerHTML='';
-  const ult = [...aplics].reverse().slice(0,10);
-  ult.forEach((a,i)=>{
-    const li = document.createElement('li'); li.className='item';
-    li.innerHTML = `<div><strong>${a.talhao}</strong> – <span class="badge">${a.insumo}</span>
-      • ${a.kg.toFixed(2)} kg • ${fmtMoeda(a.custo)}
-      <br><small>${a.data} — ${a.desc||'-'}</small></div>
-      <div class="acoes"><button class="btn perigo" data-delapl="${aplics.length-1 - i}">Excluir</button></div>`;
-    ul.appendChild(li);
+  const a = read(SKEYS.APLICS);
+  const wrap = $("#listaAplics");
+  if(!a.length){ wrap.innerHTML = `<div class="muted" style="padding:12px">Sem aplicações...</div>`; return; }
+  wrap.innerHTML = `<table class="table">
+    <thead><tr><th>Data</th><th>Talhão</th><th>Insumo</th><th>Kg</th><th>Custo (R$)</th><th>Descrição</th><th></th></tr></thead>
+    <tbody>${a.slice(-20).reverse().map((r,i)=>`<tr>
+      <td>${new Date(r.ts).toLocaleDateString('pt-BR')}</td>
+      <td>${r.t}</td><td>${r.ins}</td><td>${r.kg.toFixed(1)}</td><td>R$ ${r.custo.toFixed(2)}</td>
+      <td>${r.desc||''}</td>
+      <td><button class="btn danger" data-del="${r.id}">Excluir</button></td>
+    </tr>`).join('')}</tbody></table>`;
+  wrap.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.del; const all=read(SKEYS.APLICS); const j=all.findIndex(x=>x.id===id); if(j>-1){all.splice(j,1); write(SKEYS.APLICS,all); renderAll();}
   });
 }
-function atualizarSelects(){
-  const selT = EL('#selTalhao'); selT.innerHTML='';
-  talhoes.forEach(t=>{ const o=document.createElement('option'); o.value=o.textContent=t; selT.appendChild(o); });
-  const selI = EL('#selInsumo'); selI.innerHTML='';
-  estoque.forEach(e=>{
-    const o = document.createElement('option');
-    o.value = e.nome;
-    o.textContent = `${e.nome} — ${e.kg.toFixed(1)}kg • R$${Number(e.precoSaco50).toFixed(2)}/50kg`;
-    selI.appendChild(o);
-  });
-  EL('#hintInsumo').textContent = estoque.length ? 'O custo usa o preço do estoque.' : 'Cadastre insumos no Estoque.';
+function renderResumoOptions(){
+  // meses
+  const selM = $("#selMes");
+  selM.innerHTML = meses.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+  selM.value = (new Date().getMonth()+1);
+  // anos (últimos 7)
+  const anoAtual = (new Date()).getFullYear();
+  const selA = $("#selAno");
+  let opts = ``;
+  for(let a=anoAtual; a>=anoAtual-6; a--) opts += `<option>${a}</option>`;
+  selA.innerHTML = opts;
+  selA.value = anoAtual;
 }
-function atualizarResumoMensal(){
-  const body = EL('#tbodyResumo'); body.innerHTML='';
-  const mapa = {};
-  aplics.forEach(a=>{
-    const [d,m,y] = a.data.split('/');
-    const key = `${y}-${m}`;
-    mapa[key] = mapa[key] || {kg:0, gasto:0};
-    mapa[key].kg += a.kg;
-    mapa[key].gasto += a.custo;
+function renderResumo(m=(new Date().getMonth()+1), y=(new Date()).getFullYear()){
+  const a = read(SKEYS.APLICS);
+  const est = read(SKEYS.ESTOQUE);
+  // filtrar por mês/ano
+  const rows = a.filter(r=>{
+    const d = new Date(r.ts);
+    return (d.getMonth()+1)===+m && d.getFullYear()===+y;
   });
-  Object.keys(mapa).sort().forEach(k=>{
-    const [y,m] = k.split('-');
-    const row = document.createElement('div'); row.className='t-row';
-    row.innerHTML = `<span>${m}/${y}</span><span>${mapa[k].kg.toFixed(2)}</span><span>${fmtMoeda(mapa[k].gasto)}</span>`;
-    body.appendChild(row);
+  // agregar por insumo
+  const map = {};
+  rows.forEach(r=>{
+    map[r.ins] = map[r.ins] || {kg:0, gasto:0};
+    map[r.ins].kg += r.kg;
+    map[r.ins].gasto += r.custo;
   });
+  const wrap = $("#tabelaResumo");
+  const linhas = Object.entries(map).map(([ins,v])=>`<tr><td>${ins}</td><td>${v.kg.toFixed(1)}</td><td>R$ ${v.gasto.toFixed(2)}</td><td>${String(m).padStart(2,'0')}/${y}</td></tr>`).join('');
+  wrap.innerHTML = `<table id="resumoTable" class="table">
+    <thead><tr><th>Insumo</th><th>Kg aplicados</th><th>Gasto (R$)</th><th>Mês/Ano</th></tr></thead>
+    <tbody>${linhas || `<tr><td colspan="4" class="muted">Sem dados para o período.</td></tr>`}</tbody>
+  </table>`;
 }
 
-// Talhões
-EL('#btnAddTalhao').addEventListener('click', ()=>{
-  const nome = EL('#inpTalhao').value.trim();
+// ====== Eventos ======
+$("#btnAddTalhao").onclick = ()=>{
+  const nome = $("#inpTalhao").value.trim();
   if(!nome) return;
-  if(talhoes.includes(nome)) return alert('Já existe um talhão com esse nome.');
-  talhoes.push(nome);
-  EL('#inpTalhao').value='';
-  salvarTudo(); render();
-});
-EL('#listaTalhoes').addEventListener('click', (ev)=>{
-  const del = ev.target.getAttribute('data-del');
-  const ed  = ev.target.getAttribute('data-editar');
-  if(del!==null){
-    const i = Number(del);
-    if(confirm(`Excluir talhão "${talhoes[i]}"?`)){
-      aplics = aplics.filter(a=>a.talhao!==talhoes[i]);
-      talhoes.splice(i,1);
-      salvarTudo(); render();
-    }
-  }
-  if(ed!==null){
-    const i = Number(ed);
-    const novo = prompt('Novo nome do talhão:', talhoes[i]);
-    if(novo && !talhoes.includes(novo)){
-      aplics = aplics.map(a => a.talhao===talhoes[i] ? {...a, talhao:novo} : a);
-      talhoes[i]=novo; salvarTudo(); render();
-    }
-  }
-});
+  const arr = read(SKEYS.TALHOES);
+  if(arr.includes(nome)) return alert("Já existe um talhão com esse nome.");
+  arr.push(nome); write(SKEYS.TALHOES,arr); $("#inpTalhao").value=""; renderAll();
+};
 
-// Estoque
-EL('#btnAddEstoque').addEventListener('click', ()=>{
-  const nome = EL('#inpNomeIns').value.trim();
-  const kg   = Number(EL('#inpQtdIns').value);
-  const preco= Number(EL('#inpPrecoIns').value);
-  if(!nome || kg<=0 || preco<0) return;
-  const ex = estoque.find(e=>e.nome.toLowerCase()===nome.toLowerCase());
-  if(ex){ ex.kg += kg; ex.precoSaco50 = preco; } else { estoque.push({nome, kg, precoSaco50:preco}); }
-  EL('#inpNomeIns').value=EL('#inpQtdIns').value=EL('#inpPrecoIns').value='';
-  salvarTudo(); render();
-});
-EL('#listaEstoque').addEventListener('click',(ev)=>{
-  const rep = ev.target.getAttribute('data-repor');
-  const del = ev.target.getAttribute('data-delins');
-  if(rep!==null){
-    const i=Number(rep); const add=Number(prompt('Adicionar quantidade (kg):','0'));
-    if(add>0){ estoque[i].kg+=add; salvarTudo(); render(); }
-  }
-  if(del!==null){
-    const i=Number(del);
-    if(confirm(`Excluir insumo "${estoque[i].nome}"?`)){
-      estoque.splice(i,1); salvarTudo(); render();
-    }
-  }
-});
+$("#btnAddEstoque").onclick = ()=>{
+  const nome = $("#insNome").value.trim();
+  const qtd  = parseFloat($("#insQtd").value);
+  const preco= parseFloat($("#insPreco").value);
+  if(!nome||!(qtd>0)||!(preco>=0)) return alert("Preencha os campos do estoque.");
+  const est = read(SKEYS.ESTOQUE);
+  const idx = est.findIndex(e=>e.nome.toLowerCase()===nome.toLowerCase());
+  if(idx>-1){ est[idx].qtd += qtd; est[idx].preco = preco; }
+  else{ est.push({nome, qtd, preco}); }
+  write(SKEYS.ESTOQUE, est);
+  $("#insNome").value=$("#insQtd").value=$("#insPreco").value="";
+  renderAll();
+};
 
-// Registros (integração com Estoque)
-EL('#btnSalvarAplic').addEventListener('click', ()=>{
-  if(!talhoes.length) return alert('Cadastre um talhão primeiro.');
-  if(!estoque.length) return alert('Cadastre um insumo no estoque primeiro.');
+$("#btnSalvarAplic").onclick = ()=>{
+  const talhao = $("#selTalhao").value;
+  const insumo = $("#selInsumo").value;
+  const kg = parseFloat($("#inpQtd").value);
+  const desc = $("#inpDesc").value.trim();
+  if(!talhao||!insumo||!(kg>0)) return alert("Preencha Talhão, Insumo e Quantidade.");
+  const est = read(SKEYS.ESTOQUE);
+  const it = est.find(e=>e.nome===insumo);
+  if(!it) return alert("Insumo não encontrado no estoque.");
+  if(it.qtd < kg) return alert("Estoque insuficiente.");
+  const custoKg = (it.preco/50); // preço por kg
+  const custoAplic = custoKg * kg;
+  it.qtd -= kg;
+  write(SKEYS.ESTOQUE, est);
+  const a = read(SKEYS.APLICS);
+  a.push({ id:crypto.randomUUID(), t:talhao, ins:insumo, kg, custo:custoAplic, desc, ts:Date.now() });
+  write(SKEYS.APLICS,a);
+  $("#inpQtd").value=""; $("#inpDesc").value="";
+  renderAll(); go('sec-registros');
+};
 
-  const talhao = EL('#selTalhao').value;
-  const insumoNome = EL('#selInsumo').value;
-  const desc = EL('#inpDesc').value.trim();
-  const kg = Number(EL('#inpKg').value);
-  if(kg<=0) return;
+$("#btnFiltrarResumo").onclick = ()=>{
+  renderResumo($("#selMes").value, $("#selAno").value);
+};
 
-  const ins = estoque.find(e=>e.nome===insumoNome);
-  if(!ins) return alert('Insumo não encontrado no estoque.');
-  if(ins.kg < kg){
-    if(!confirm(`Estoque insuficiente (${ins.kg.toFixed(2)} kg). Deseja aplicar mesmo assim?`)) return;
-  }
-  const precoKg = (Number(ins.precoSaco50)||0)/50;
-  const custo = precoKg * kg;
-
-  ins.kg -= kg;
-  aplics.push({ data: new Date().toLocaleDateString('pt-BR'), talhao, insumo: insumoNome, desc, kg, custo });
-
-  EL('#inpDesc').value=''; EL('#inpKg').value='';
-  salvarTudo(); render();
-});
-
-// Excluir aplicação (devolve estoque)
-EL('#listaAplic').addEventListener('click',(ev)=>{
-  const del = ev.target.getAttribute('data-delapl');
-  if(del!==null){
-    const i = Number(del); const a=aplics[i];
-    if(confirm('Excluir registro e devolver o estoque?')){
-      const ins = estoque.find(e=>e.nome===a.insumo); if(ins) ins.kg += a.kg;
-      aplics.splice(i,1); salvarTudo(); render();
-    }
-  }
-});
-
-// Backup JSON
-EL('#btnExport').addEventListener('click', ()=>{
-  const blob = new Blob([JSON.stringify({talhoes, estoque, aplics},null,2)],{type:'application/json'});
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = `grao-digital-backup-${Date.now()}.json`; a.click();
-});
-EL('#fileImport').addEventListener('change', e=>{
-  const f = e.target.files[0]; if(!f) return;
-  const rd = new FileReader();
-  rd.onload = ()=>{
-    try{
-      const obj = JSON.parse(rd.result);
-      talhoes = obj.talhoes || talhoes;
-      estoque = obj.estoque || estoque;
-      aplics  = obj.aplics  || aplics;
-      salvarTudo(); render(); alert('Backup importado!');
-    }catch(e){ alert('Arquivo inválido.'); }
-  };
-  rd.readAsText(f);
-});
-
-// Navegação
-function mostrar(id){
-  document.querySelectorAll('main section').forEach(s=> s.style.display='none');
-  EL('#'+id).style.display='block';
-  document.querySelectorAll('.nav-btn').forEach(b=> b.classList.remove('ativo'));
-  const btn = document.querySelector(`.nav-btn[data-go="${id}"]`); if(btn) btn.classList.add('ativo');
+// Exportações
+function tableToCSV(tableId){
+  const rows = Array.from(document.querySelectorAll(`#${tableId} tr`));
+  return rows.map(r=>Array.from(r.children).map(c=>`"${c.textContent.replace(/"/g,'""')}"`).join(';')).join('\n');
 }
-document.querySelectorAll('.nav-btn').forEach(b=> b.addEventListener('click',()=>mostrar(b.dataset.go)));
+$("#btnCsv").onclick = ()=>{
+  const csv = tableToCSV('resumoTable');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'resumo.csv';
+  a.click();
+};
 
-// Drive (opcional)
-const CLIENT_ID = "SUBSTITUA_AQUI_SEU_CLIENT_ID.apps.googleusercontent.com";
+$("#btnPdf").onclick = ()=>{
+  // Abre uma janela de impressão com a tabela – usuário pode salvar como PDF.
+  const html = `
+    <html><head><meta charset="utf-8">
+      <title>Resumo Mensal</title>
+      <style>body{font:14px Arial;padding:20px} table{border-collapse:collapse;width:100%} th,td{border:1px solid #999;padding:8px;text-align:left}</style>
+    </head><body>
+      <h2>Resumo Mensal</h2>
+      ${$("#tabelaResumo").innerHTML}
+      <script>window.print()</script>
+    </body></html>`;
+  const w = window.open('', '_blank'); w.document.write(html); w.document.close();
+};
+
+// JSON backup
+$("#btnExportJson").onclick = ()=>{
+  const data = {
+    talhoes: read(SKEYS.TALHOES), estoque: read(SKEYS.ESTOQUE), aplics: read(SKEYS.APLICS)
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:"application/json"});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'grao-digital-backup.json'; a.click();
+};
+$("#btnImportJson").onclick = ()=>{
+  const f = $("#fileImport").files?.[0];
+  if(!f) return alert("Selecione o arquivo JSON.");
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const js = JSON.parse(r.result);
+      write(SKEYS.TALHOES, js.talhoes||[]);
+      write(SKEYS.ESTOQUE, js.estoque||[]);
+      write(SKEYS.APLICS,  js.aplics ||[]);
+      renderAll(); alert("Importado com sucesso!");
+    }catch(e){ alert("Arquivo inválido."); }
+  };
+  r.readAsText(f);
+};
+
+// Limpeza
+$("#btnLimpar").onclick = ()=>{
+  if(confirm("Tem certeza?")){ localStorage.clear(); renderAll(); }
+};
+
+// ====== Google Drive (GIS + REST) ======
+const CLIENT_ID = "149167584419-39h4d0qhjfjqs09687oih6p1fkpqds0k.apps.googleusercontent.com";
+const SCOPES = "https://www.googleapis.com/auth/drive.file openid email profile";
 let accessToken = null;
 
 function initGoogle(){
-  if(!CLIENT_ID || CLIENT_ID.includes('SUBSTITUA_AQUI')) return alert("Edite CLIENT_ID em app.js para ativar o Drive.");
-  const s = document.createElement('script'); s.src="https://accounts.google.com/gsi/client";
+  if(!CLIENT_ID.includes(".apps.googleusercontent.com")){
+    alert("Edite CLIENT_ID em app.js com seu OAuth Client ID antes de conectar."); return;
+  }
+  const s = document.createElement('script');
+  s.src = "https://accounts.google.com/gsi/client";
   s.onload = ()=>{
     google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: "https://www.googleapis.com/auth/drive.file openid email profile",
+      client_id: CLIENT_ID, scope: SCOPES,
       callback: (token)=>{ accessToken = token.access_token; alert("Conectado ao Google."); }
     }).requestAccessToken();
   };
   document.body.appendChild(s);
 }
-async function saveToDrive(){
-  if(!accessToken) return alert('Conecte ao Google primeiro.');
-  const file = new Blob([JSON.stringify({talhoes, estoque, aplics},null,2)],{type:'application/json'});
-  const metadata = { name: `grao-digital-backup-${Date.now()}.json`, mimeType:"application/json" };
-  const form = new FormData();
-  form.append("metadata", new Blob([JSON.stringify(metadata)], {type:"application/json"}));
-  form.append("file", file);
-  const r = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id",{
-    method:"POST", headers:{Authorization:`Bearer ${accessToken}`}, body:form
-  });
-  if(r.ok) alert("Backup salvo no Drive!"); else alert("Falha ao salvar no Drive.");
-}
-async function loadFromDrive(){
-  if(!accessToken) return alert('Conecte ao Google primeiro.');
-  const q = encodeURIComponent("name contains 'grao-digital-backup-' and mimeType = 'application/json'");
-  const r = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime desc&pageSize=1&fields=files(id,name)`,{
-    headers:{Authorization:`Bearer ${accessToken}`}
-  });
-  const js = await r.json();
-  if(!js.files?.length) return alert("Nenhum backup encontrado.");
-  const fileId = js.files[0].id;
-  const r2 = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{
-    headers:{Authorization:`Bearer ${accessToken}`}
-  });
-  const obj = await r2.json();
-  talhoes = obj.talhoes || talhoes; estoque = obj.estoque || estoque; aplics = obj.aplics || aplics;
-  salvarTudo(); render(); alert("Backup carregado do Drive!");
-}
-EL('#btnConnect')?.addEventListener('click', initGoogle);
-EL('#btnSaveDrive')?.addEventListener('click', saveToDrive);
-EL('#btnLoadDrive')?.addEventListener('click', loadFromDrive);
+$("#btnLogin").onclick = initGoogle;
 
-// PWA
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=> navigator.serviceWorker.register('service-worker.js'));
+async function driveUpload(jsonObj){
+  if(!accessToken) return alert("Conecte ao Google primeiro.");
+  const fileName = "grao-digital-backup.json";
+  const metadata = { name:fileName, mimeType:"application/json" };
+  const boundary = "GDBoundary" + Math.random().toString(36).slice(2);
+  const body =
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n`+
+    JSON.stringify(metadata)+
+    `\r\n--${boundary}\r\nContent-Type: application/json\r\n\r\n`+
+    JSON.stringify(jsonObj)+
+    `\r\n--${boundary}--`;
+  const res = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+    method:"POST",
+    headers:{ "Authorization":"Bearer "+accessToken, "Content-Type":"multipart/related; boundary="+boundary },
+    body
+  });
+  if(!res.ok) return alert("Falha ao enviar para o Drive.");
+  alert("Backup enviado ao Drive.");
 }
+$("#btnSalvarDrive").onclick = ()=>{
+  const data = { talhoes: read(SKEYS.TALHOES), estoque: read(SKEYS.ESTOQUE), aplics: read(SKEYS.APLICS) };
+  driveUpload(data);
+};
 
-// inicial
-mostrar('sec-talhoes'); render();
+async function driveDownload(){
+  if(!accessToken) return alert("Conecte ao Google primeiro.");
+  // procura pelo arquivo pelo nome (o mais recente)
+  const q = encodeURIComponent("name = 'grao-digital-backup.json'");
+  const list = await fetch("https://www.googleapis.com/drive/v3/files?q="+q+"&orderBy=modifiedTime desc&pageSize=1", {
+    headers:{ Authorization:"Bearer "+accessToken }
+  }).then(r=>r.json());
+  if(!list.files?.length) return alert("Arquivo não encontrado no Drive.");
+  const fileId = list.files[0].id;
+  const txt = await fetch("https://www.googleapis.com/drive/v3/files/"+fileId+"?alt=media", {
+    headers:{ Authorization:"Bearer "+accessToken }
+  }).then(r=>r.text());
+  try{
+    const js = JSON.parse(txt);
+    write(SKEYS.TALHOES, js.talhoes||[]);
+    write(SKEYS.ESTOQUE, js.estoque||[]);
+    write(SKEYS.APLICS,  js.aplics ||[]);
+    renderAll(); alert("Backup carregado do Drive!");
+  }catch(e){ alert("Conteúdo inválido no arquivo."); }
+}
+$("#btnCarregarDrive").onclick = driveDownload;
+
+// ====== Inicialização ======
+function renderAll(){
+  renderTalhoes();
+  renderEstoque();
+  renderAplics();
+  renderResumoOptions();
+  renderResumo($("#selMes").value, $("#selAno").value);
+}
+renderAll();
+go('sec-talhoes');
+
+// PWA SW
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('./service-worker.js'); }

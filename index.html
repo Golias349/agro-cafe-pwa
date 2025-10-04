@@ -22,6 +22,7 @@
   </header>
 
   <main id="conteudo" class="conteudo">
+    <!-- Talhões -->
     <section id="sec-talhoes" class="card">
       <h2>🌿 Talhões</h2>
       <div class="row gap">
@@ -31,8 +32,9 @@
       <ul id="listaTalhoes" class="lista"></ul>
     </section>
 
+    <!-- Registros -->
     <section id="sec-registros" class="card hidden">
-      <h2>📝 Registros de Adubação</h2>
+      <h2>🧾 Registros de Adubação</h2>
       <div class="grid grid-4 gap">
         <select id="regTalhao" class="inp"></select>
         <select id="regInsumo" class="inp"></select>
@@ -47,6 +49,7 @@
       <ul id="listaRegistros" class="lista"></ul>
     </section>
 
+    <!-- Estoque -->
     <section id="sec-estoque" class="card hidden">
       <h2>📦 Estoque</h2>
       <div class="grid grid-3 gap">
@@ -67,6 +70,7 @@
       </table>
     </section>
 
+    <!-- Resumo -->
     <section id="sec-resumo" class="card hidden">
       <h2>📊 Resumo Mensal</h2>
       <div class="grid grid-3 gap">
@@ -90,6 +94,7 @@
       </table>
     </section>
 
+    <!-- Config -->
     <section id="sec-config" class="card hidden">
       <h2>⚙️ Configurações</h2>
       <div class="card-ghost">
@@ -110,7 +115,7 @@
           <button class="btn btn-sec" id="btnGoogleSalvar">Salvar no Drive</button>
           <button class="btn btn-sec" id="btnGoogleCarregar">Carregar do Drive</button>
         </div>
-        
+        <small class="hint">Usa OAuth do Google Drive. Precisa autorizar na sua conta Google.</small>
       </div>
 
       <div class="card-ghost danger">
